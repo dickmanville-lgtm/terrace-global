@@ -1,7 +1,12 @@
+'use client'
+
+import dynamic from 'next/dynamic'
+
+const FanMap = dynamic(() => import('./FanMap'), { ssr: false })
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* Nav */}
       <nav className="flex items-center justify-between px-8 py-5 border-b border-white/10">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-red-500"></div>
@@ -17,8 +22,7 @@ export default function Home() {
         </button>
       </nav>
 
-      {/* Hero */}
-      <section className="max-w-4xl mx-auto px-8 py-32 text-center">
+      <section className="max-w-4xl mx-auto px-8 py-24 text-center">
         <div className="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/20 rounded-full px-4 py-1.5 text-red-400 text-xs mb-8">
           <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
           Launching pre-season 2026 · Arsenal first
@@ -40,7 +44,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clubs */}
+      <section className="border-t border-white/10">
+        <div className="px-8 py-6 flex items-center justify-between">
+          <p className="text-white font-medium">Fans worldwide — right now</p>
+          <div className="flex items-center gap-2 text-xs text-white/40">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+            47,291 fans mapped
+          </div>
+        </div>
+        <FanMap />
+      </section>
+
       <section className="border-t border-white/10 px-8 py-16">
         <p className="text-center text-white/30 text-xs uppercase tracking-widest mb-8">Launching with · expanding to every club</p>
         <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
@@ -52,7 +66,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Waitlist */}
       <section className="border-t border-white/10 px-8 py-24 text-center">
         <h2 className="text-3xl font-bold mb-3">Be first on the terrace</h2>
         <p className="text-white/50 mb-8">Arsenal fans — register now and get founding member status at launch.</p>
@@ -68,7 +81,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 px-8 py-6 text-center text-white/20 text-xs">
         terrace.global — the global home for football fans
       </footer>
