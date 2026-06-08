@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiZ29vbmVybWFudmlsbGUiLCJhIjoiY21xNDN6YTZhMHRmdDJyc2F5d3hmM3M0OCJ9.s1SS4ivx-suzfsajowJPyA';
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
 const FAN_GROUPS = [
   { id: 1, type: 'community', name: 'Gooners NYC', city: 'New York', lat: 40.7128, lng: -74.006, members: 340 },
