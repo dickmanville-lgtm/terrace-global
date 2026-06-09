@@ -86,21 +86,14 @@ export default function Home() {
           and never watch alone — wherever you are in the world.
         </p>
 
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button style={{
-            background: '#EF4444', color: '#fff', border: 'none', borderRadius: '8px',
-            padding: '14px 28px', fontSize: '15px', fontWeight: 600, cursor: 'pointer',
-          }}>
-            Pin your location
-          </button>
-          <Link href="/fan-map" style={{
-            display: 'inline-block', background: 'transparent', color: 'rgba(255,255,255,0.8)',
-            border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px',
-            padding: '14px 28px', fontSize: '15px', fontWeight: 500, cursor: 'pointer', textDecoration: 'none',
-          }}>
-            Explore the fan map
-          </Link>
-        </div>
+        <p style={{
+  fontSize: '16px',
+  color: '#EF4444',
+  fontWeight: 600,
+  letterSpacing: '0.02em',
+}}>
+  ↓ Select your club below to explore your fan map
+</p>
       </section>
 
       <section style={{ padding: '0 32px 80px', maxWidth: '900px', margin: '0 auto' }}>
