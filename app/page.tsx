@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const CLUBS = [
   { name: 'Arsenal', active: true, url: '/arsenal'},
-  { name: 'Liverpool', active: false },
+  { name: 'Liverpool', active: false, url: '/liverpool' },
   { name: 'Man United', active: false },
   { name: 'Chelsea', active: false },
   { name: 'Man City', active: false },
