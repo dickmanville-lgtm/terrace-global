@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 const CLUBS = [
-  { name: 'Arsenal', active: true },
+  { name: 'Arsenal', active: true, url: '/arsenal'},
   { name: 'Liverpool', active: false },
   { name: 'Man United', active: false },
   { name: 'Chelsea', active: false },
@@ -112,7 +112,7 @@ export default function Home() {
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
           {CLUBS.map(club => (
-            <button key={club.name} onClick={() => setActiveClub(club.name)} style={{
+            <button key={club.name} onClick={() => { setActiveClub(club.name); if(club.url) window.location.href=club.url; }} style={{
               padding: '8px 18px', borderRadius: '999px',
               border: activeClub === club.name ? '1px solid #EF4444' : '1px solid rgba(255,255,255,0.12)',
               background: activeClub === club.name ? 'rgba(239,68,68,0.15)' : 'transparent',
