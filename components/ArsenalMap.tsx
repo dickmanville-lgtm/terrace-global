@@ -12,7 +12,7 @@ const ARSENAL_GROUPS = [
   { id: 1, name: 'Arsenal Supporters Trust', city: 'London', country: 'UK', lat: 51.555, lng: -0.108, website: 'https://www.arsenaltrust.org', description: 'Independent supporters trust' },
   { id: 2, name: 'Gay Gooners', city: 'London', country: 'UK', lat: 51.545, lng: -0.115, website: 'https://www.arsenal.com/fanzone/gay-gooners', description: 'Official LGBTQ+ supporters group. 1,600+ members across 51 countries.' },
   { id: 3, name: 'Arsenal America', city: 'Washington DC', country: 'USA', lat: 38.9072, lng: -77.0369, website: 'https://arsenalamerica.com', description: 'Official national chapter. 86+ branches across the USA.' },
-  { id: 4, name: 'Arsenal NYC', city: 'New York', country: 'USA', lat: 40.7128, lng: -74.006, website: 'https://arsenalnyc.com', description: 'Independent supporters group for New York City.' },
+  
   { id: 10, name: 'Arsenal Canada', city: 'Toronto', country: 'Canada', lat: 43.6532, lng: -79.3832, website: 'https://www.arsenal.com/fanzone/arsenal-supporters-clubs', description: 'Arsenal supporters across Canada.' },
   { id: 11, name: 'Arsenal Australia', city: 'Sydney', country: 'Australia', lat: -33.8688, lng: 151.2093, website: 'https://arsenalaustralia.com.au', description: 'Official supporters club. Active in Sydney, Melbourne, Brisbane, Perth and beyond.' },
   { id: 12, name: 'Arsenal Melbourne', city: 'Melbourne', country: 'Australia', lat: -37.8136, lng: 144.9631, website: 'https://arsenalaustralia.com.au', description: 'Part of Arsenal Australia Supporters Club network.' },

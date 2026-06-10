@@ -29,7 +29,7 @@ const SUPPORTER_CLUBS = [
     region: 'USA',
     groups: [
       { name: 'Arsenal America', type: 'supporter_club', city: 'Nationwide USA', country: 'USA', website: 'https://arsenalamerica.com', twitter: 'https://twitter.com/ArsenalAmerica', description: 'Officially recognised national chapter. 86+ branches across the USA. The largest Arsenal supporters network outside the UK.' },
-      { name: 'Arsenal NYC', type: 'community', city: 'New York', country: 'USA', website: 'https://arsenalnyc.com', twitter: 'https://twitter.com/ArsenalNYC', description: 'Independent supporters group for New York City and surrounding area.' },
+      
       { name: 'Arsenal Los Angeles', type: 'fan_bar', city: 'Los Angeles', country: 'USA', website: 'https://arsenalamerica.com/branches', description: 'Watches at The Fox & Hounds, 11100 Ventura Blvd, Studio City CA. Official Arsenal America branch.' },
       { name: 'Bay Area Gooners', type: 'fan_bar', city: 'San Francisco', country: 'USA', website: 'https://bayareagooners.com', twitter: 'https://twitter.com/bayareagooners', description: 'Watches at Maggy McGarry\'s Irish Pub, 1353 Grant Ave, San Francisco CA.' },
       { name: 'Chicago Gooners', type: 'fan_bar', city: 'Chicago', country: 'USA', website: 'https://arsenalamerica.com/branches', description: 'Official Arsenal America branch in Chicago. Check arsenalamerica.com for venue details.' },
