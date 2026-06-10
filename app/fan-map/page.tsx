@@ -24,7 +24,7 @@ const FanMap = dynamic(() => import('../../components/FanMap'), {
 export default function FanMapPage() {
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#0a0a0a', overflow: 'hidden', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 20 }}>
+      <div style={{ position: 'absolute', bottom: '16px', left: '16px', zIndex: 20 }}>
         <Link href="/" style={{
           display: 'inline-flex',
           alignItems: 'center',
