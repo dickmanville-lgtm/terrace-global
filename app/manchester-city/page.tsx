@@ -23,7 +23,7 @@ const SUPPORTER_CLUBS = [
     region: 'United Kingdom',
     groups: [
       { name: 'Man City OSC (Official)', type: 'supporter_club', city: 'Manchester', country: 'UK', website: 'https://www.mancityosc.com/', description: 'The official Manchester City Supporters Club, formed in 1949. Over 240 branches and 19,000 members worldwide.' },
-      { name: 'Canal Street Blues', type: 'supporter_club', city: 'Manchester', country: 'UK', website: 'http://canalstreetblues.co.uk/', description: 'Long-standing Manchester City supporters branch based in the city centre.' },
+      
       { name: 'Dukinfield Blues', type: 'supporter_club', city: 'Dukinfield', country: 'UK', website: 'https://www.dukinfieldmcfc.co.uk/', description: 'Official MCFC supporters branch serving the Dukinfield area of Greater Manchester.' },
       { name: 'Hazel Grove Blues', type: 'supporter_club', city: 'Hazel Grove', country: 'UK', website: 'http://www.hazelgroveblues.co.uk/', description: 'Official supporters branch for Man City fans in the Hazel Grove and Stockport area.' },
       { name: 'Northenden Blues', type: 'supporter_club', city: 'Northenden', country: 'UK', website: 'http://www.northendenblues.com/', description: 'Official MCFC supporters branch in the Northenden area of South Manchester.' },

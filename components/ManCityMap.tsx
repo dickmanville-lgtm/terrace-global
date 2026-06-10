@@ -16,7 +16,7 @@ const MANCITY_GROUPS = [
   { name: 'Man City Scandinavia', city: 'Oslo', country: 'Norway', lat: 59.9139, lng: 10.7522, website: 'http://www.manchestercity.no/', description: 'Official MCFC supporters branch for City fans across Scandinavia, based in Norway.' },
   { name: 'MCFC Australia', city: 'Australia', country: 'Australia', lat: -25.2744, lng: 133.7751, website: 'https://www.mcfcaustralia.com.au/', description: 'Founded in 2003 by fans for fans. The home of Manchester City FC in Australia.' },
   { name: 'Man City OSC (Official)', city: 'Manchester', country: 'UK', lat: 53.4831, lng: -2.2006, website: 'https://www.mancityosc.com/', description: 'The official Manchester City Supporters Club, formed in 1949. Over 240 branches worldwide.' },
-  { name: 'Canal Street Blues', city: 'Manchester', country: 'UK', lat: 53.4808, lng: -2.2374, website: 'http://canalstreetblues.co.uk/', description: 'Long-standing Manchester City supporters branch based in the city centre.' },
+  
   { name: 'Dukinfield Blues', city: 'Dukinfield', country: 'UK', lat: 53.4741, lng: -2.0897, website: 'https://www.dukinfieldmcfc.co.uk/', description: 'Official MCFC supporters branch serving the Dukinfield area of Greater Manchester.' },
   { name: 'Hazel Grove Blues', city: 'Hazel Grove', country: 'UK', lat: 53.3741, lng: -2.1197, website: 'http://www.hazelgroveblues.co.uk/', description: 'Official supporters branch for Man City fans in the Hazel Grove and Stockport area.' },
   { name: 'Northenden Blues', city: 'Northenden', country: 'UK', lat: 53.4066, lng: -2.2469, website: 'http://www.northendenblues.com/', description: 'Official MCFC supporters branch in the Northenden area of South Manchester.' },
