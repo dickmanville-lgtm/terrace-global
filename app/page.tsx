@@ -10,7 +10,7 @@ const CLUBS = [
   { name: 'Chelsea', active: true, url: '/chelsea' },
   { name: 'Manchester City', url: '/manchester-city'},
   { name: 'Spurs', active: true, url: '/spurs' },
-  { name: 'Newcastle', active: false },
+  { name: 'Newcastle', active: true, url: '/newcastle' },
   { name: 'Aston Villa', active: false },
   { name: 'Barcelona', active: false },
   { name: 'Real Madrid', active: false },
