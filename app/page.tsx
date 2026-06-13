@@ -18,6 +18,7 @@ const CLUBS = [
   { name: 'Crystal Palace', active: true, url: '/crystal-palace' },
   { name: 'Brentford', active: true, url: '/brentford' },
   { name: 'Everton', active: true, url: '/everton' },
+  { name: 'Nottingham Forest', active: true, url: '/nottingham-forest' },
   { name: 'Barcelona', active: false },
   { name: 'Real Madrid', active: false },
   { name: 'Bayern Munich', active: false },
