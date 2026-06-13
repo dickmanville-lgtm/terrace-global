@@ -23,6 +23,7 @@ const CLUBS = [
   { name: 'Coventry City', active: true, url: '/coventry' },
   { name: 'Hull City', active: true, url: '/hull' },
   { name: 'Ipswich Town', active: true, url: '/ipswich' },
+  { name: 'Celtic', active: true, url: '/celtic' },
   { name: 'Barcelona', active: false },
   { name: 'Real Madrid', active: false },
   { name: 'Bayern Munich', active: false },
