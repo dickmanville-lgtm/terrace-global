@@ -15,6 +15,7 @@ const CLUBS = [
   { name: 'Bournemouth', active: true, url: '/bournemouth' },
   { name: 'Sunderland', active: true, url: '/sunderland' },
   { name: 'Brighton', active: true, url: '/brighton' },
+  { name: 'Crystal Palace', active: true, url: '/crystal-palace' },
   { name: 'Barcelona', active: false },
   { name: 'Real Madrid', active: false },
   { name: 'Bayern Munich', active: false },
