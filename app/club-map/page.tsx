@@ -39,6 +39,7 @@ export default function ClubMapPage() {
           </div>
           <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '12px' }}>
             Every ground.<br /><span style={{ color: 'rgba(255,255,255,0.4)' }}>Click to visit the club.</span>
+            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}>Grounds mapped from Europe's top leagues. Click any pin for the stadium name and a link to the club's official website.</p>
           </h1>
           <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}>
             
