@@ -41,7 +41,7 @@ export default function ClubMapPage() {
             Every ground.<br /><span style={{ color: 'rgba(255,255,255,0.4)' }}>Click to visit the club.</span>
           </h1>
           <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}>
-            All 20 Premier League grounds mapped. Click any pin for the stadium name and a link to the club's official website. European grounds coming soon.
+            
           </p>
         </div>
       </section>
