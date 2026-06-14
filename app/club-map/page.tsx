@@ -35,7 +35,7 @@ export default function ClubMapPage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '999px', padding: '5px 12px', marginBottom: '20px', fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#fff' }} />
-            Premier League 2026/27 · 20 Grounds
+           
           </div>
           <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '12px' }}>
             Every ground.<br /><span style={{ color: 'rgba(255,255,255,0.4)' }}>Click to visit the club.</span>
