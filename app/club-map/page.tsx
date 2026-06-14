@@ -27,7 +27,7 @@ export default function ClubMapPage() {
           <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)' }} />
           <span style={{ fontSize: '14px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Club Map</span>
         </div>
-        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>Premier League grounds — click a pin to visit the club</div>
+        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>Search acrross Europe's main League grounds — click a pin to visit the club</div>
       </nav>
 
       {/* Hero */}
