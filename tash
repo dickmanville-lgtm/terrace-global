@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -24,7 +24,6 @@ const CLUBS = [
   { name: 'Hull City', active: true, url: '/hull' },
   { name: 'Ipswich Town', active: true, url: '/ipswich' },
   { name: 'Celtic', active: true, url: '/celtic' },
-  { name: 'Rangers', active: true, url: '/rangers' },
   { name: 'Barcelona', active: false },
   { name: 'Real Madrid', active: false },
   { name: 'Bayern Munich', active: false },
@@ -68,7 +67,6 @@ export default function Home() {
             <Link href="/fan-map" style={{ color: 'inherit', textDecoration: 'none' }}>Fan map</Link>
             <span style={{ cursor: 'pointer' }}>Clubs</span>
             <span style={{ cursor: 'pointer' }}>Matchday</span>
-            <span style={{ cursor: 'pointer' }} onClick={() => window.location.href='/club-map'}>Club Map</span>
           </div>
           <button style={{
             background: '#EF4444', color: '#fff', border: 'none', borderRadius: '6px',
@@ -87,7 +85,7 @@ export default function Home() {
           fontSize: '12px', color: '#EF4444', fontWeight: 500, letterSpacing: '0.06em',
         }}>
           <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444', animation: 'pulse 2s infinite' }} />
-          Launching pre-season 2026 ┬╖ Arsenal first
+          Launching pre-season 2026 · Arsenal first
         </div>
 
         <h1 style={{ fontSize: 'clamp(42px, 8vw, 80px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '24px' }}>
@@ -97,7 +95,7 @@ export default function Home() {
 
         <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 48px' }}>
           The global home for football supporters. Find your people, follow your club,
-          and never watch alone ΓÇö wherever you are in the world.
+          and never watch alone — wherever you are in the world.
         </p>
 
         <p style={{
@@ -106,7 +104,7 @@ export default function Home() {
   fontWeight: 600,
   letterSpacing: '0.02em',
 }}>
-  Γåô Select your club below to explore your fan map
+  ↓ Select your club below to explore your fan map
 </p>
       </section>
 
@@ -176,7 +174,7 @@ export default function Home() {
                   background: '#EF4444', color: '#fff', borderRadius: '8px',
                   padding: '10px 24px', fontSize: '14px', fontWeight: 600, marginTop: '8px',
                 }}>
-                  Open the map ΓåÆ
+                  Open the map →
                 </div>
               </div>
             </div>
