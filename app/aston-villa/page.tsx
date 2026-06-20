@@ -1,133 +1,84 @@
-'use client';
-
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+import { supabase } from '../../lib/supabase';
+import ClubMapLoader from '../../components/ClubMapLoader';
 
-const ClubMap = dynamic(() => import('../../components/AstonVillaMap'), {
-  ssr: false,
-  loading: () => (
-    <div style={{
-      width: '100%', height: '100%', background: '#0a0a0a',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: 'rgba(255,255,255,0.3)', fontSize: '13px', letterSpacing: '0.1em',
-    }}>
-      LOADING MAP
-    </div>
-  ),
-});
 
-const CLUB_COLOR = '#95BFE5';
+export const revalidate = 3600; // refresh from Supabase at most once per hour
 
-const SUPPORTER_CLUBS = [
-  {
-    region: 'United Kingdom',
-    groups: [
-      {
-        name: 'Aston Villa Supporters Trust (AVST)',
-        type: 'supporter_club',
-        city: 'Birmingham',
-        country: 'UK',
-        website: 'https://villatrust.org.uk',
-        description: 'The official supporters trust for Villa fans. Representing supporters on ticketing, club policy and fan engagement at Villa Park.',
-      },
-      {
-        name: 'My Old Man Said (MOMS)',
-        type: 'community',
-        city: 'Birmingham',
-        country: 'UK',
-        website: 'https://www.myoldmansaid.com',
-        description: 'Supporter-led media, podcast and community for Villa fans. FSA affiliated and former member of the Aston Villa Fan Advisory Board.',
-      },
-    ],
-  },
-  {
-    region: 'USA',
-    groups: [
-      {
-        name: 'California Lions Club',
-        type: 'supporter_club',
-        city: 'San Francisco',
-        country: 'USA',
-        website: 'https://www.avfccalifornia.com',
-        description: 'Official Aston Villa Lions Club in the San Francisco Bay Area. Matchdays at the Kezar Pub in Haight-Ashbury.',
-      },
-      {
-        name: 'Villa Lions Clubs USA',
-        type: 'supporter_club',
-        city: 'Nationwide',
-        country: 'USA',
-        website: 'https://www.avfc.co.uk/fans/lions-clubs/',
-        description: 'Find your nearest official Villa Lions Club across the USA via the Aston Villa official directory.',
-      },
-    ],
-  },
-  {
-    region: 'Australia',
-    groups: [
-      {
-        name: 'Villa Lions Club Australia',
-        type: 'supporter_club',
-        city: 'Sydney',
-        country: 'Australia',
-        website: 'https://www.avfc.co.uk/fans/lions-clubs/',
-        description: 'Official Aston Villa Lions Club in Australia, part of the worldwide Lions Club network.',
-      },
-    ],
-  },
-  {
-    region: 'Canada',
-    groups: [
-      {
-        name: 'Villa Lions Club Canada',
-        type: 'supporter_club',
-        city: 'Toronto',
-        country: 'Canada',
-        website: 'https://www.avfc.co.uk/fans/lions-clubs/',
-        description: 'Official Aston Villa Lions Club in Canada, part of the worldwide Lions Club network.',
-      },
-    ],
-  },
-  {
-    region: 'Ireland',
-    groups: [
-      {
-        name: 'Villa Lions Club Ireland',
-        type: 'supporter_club',
-        city: 'Dublin',
-        country: 'Ireland',
-        website: 'https://www.avfc.co.uk/fans/lions-clubs/',
-        description: 'Official Aston Villa Lions Club in Ireland, part of the worldwide Lions Club network.',
-      },
-    ],
-  },
-  {
-    region: 'Europe',
-    groups: [
-      {
-        name: 'Villa Lions Club Scandinavia',
-        type: 'supporter_club',
-        city: 'Oslo',
-        country: 'Norway',
-        website: 'https://www.avfc.co.uk/fans/lions-clubs/',
-        description: 'Official Aston Villa Lions Club in Scandinavia, part of the worldwide Lions Club network.',
-      },
-    ],
-  },
-];
-
-const TYPE_COLORS: Record<string, string> = {
-  supporter_club: CLUB_COLOR,
-  community: '#FFFFFF',
-  fan_bar: '#F97316',
+type FanGroupRow = {
+  name: string;
+  city: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  url: string;
+  description: string | null;
+  region: string | null;
+  type: string | null;
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  supporter_club: 'Supporter club',
-  community: 'Fan community',
-  fan_bar: 'Fan bar',
-};
+function typeColor(type: string | null, clubColor: string) {
+  if (type === 'community') return '#FFFFFF';
+  if (type === 'fan_bar') return '#F97316';
+  return clubColor;
+}
 
-export default function AstonVillaPage() {
+function typeLabel(type: string | null) {
+  if (type === 'community') return 'Fan community';
+  if (type === 'fan_bar') return 'Fan bar';
+  return 'Supporter club';
+}
+
+export default async function AstonVillaPage() {
+  const { data: club } = await supabase
+    .from('clubs')
+    .select('id, color')
+    .eq('slug', 'aston-villa')
+    .single();
+
+  if (!club) {
+    return (
+      <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', padding: '40px', fontFamily: "'Inter', sans-serif" }}>
+        Unable to load club data right now.
+      </main>
+    );
+  }
+
+  const CLUB_COLOR = club.color || '#95BFE5';
+
+  const { data: groupsData } = await supabase
+    .from('fan_groups')
+    .select('name, city, country, latitude, longitude, url, description, region, type')
+    .eq('club_id', club.id);
+
+  const groups: FanGroupRow[] = groupsData || [];
+
+  const mapGroups = groups
+    .filter(g => g.latitude !== null && g.longitude !== null)
+    .map(g => ({
+      name: g.name,
+      city: g.city,
+      country: g.country,
+      lat: g.latitude as number,
+      lng: g.longitude as number,
+      website: g.url,
+      description: g.description,
+    }));
+
+  const regionMap = new Map<string, FanGroupRow[]>();
+  for (const g of groups) {
+    const region = g.region || 'More worldwide';
+    if (!regionMap.has(region)) regionMap.set(region, []);
+    regionMap.get(region)!.push(g);
+  }
+  const regionOrder = Array.from(regionMap.keys()).sort((a, b) => {
+    if (a === 'United Kingdom') return -1;
+    if (b === 'United Kingdom') return 1;
+    if (a === 'More worldwide') return 1;
+    if (b === 'More worldwide') return -1;
+    return a.localeCompare(b);
+  });
+
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
@@ -166,7 +117,7 @@ export default function AstonVillaPage() {
 
       {/* Map */}
       <section id="map" style={{ height: '480px', position: 'relative', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <ClubMap />
+        <ClubMapLoader groups={mapGroups} color={CLUB_COLOR} />
         <div style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 16px', fontSize: '12px', color: 'rgba(255,255,255,0.6)', whiteSpace: 'nowrap', zIndex: 10 }}>
           Aston Villa fan groups worldwide
         </div>
@@ -178,27 +129,27 @@ export default function AstonVillaPage() {
         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', marginBottom: '48px' }}>
           Official supporter clubs and fan communities worldwide. Click any group to visit their site.
         </p>
-        {SUPPORTER_CLUBS.map(region => (
-          <div key={region.region} style={{ marginBottom: '48px' }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: CLUB_COLOR, marginBottom: '16px', paddingBottom: '8px', borderBottom: `1px solid rgba(149,191,229,0.2)` }}>
-              {region.region}
+        {regionOrder.map(region => (
+          <div key={region} style={{ marginBottom: '48px' }}>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: CLUB_COLOR, marginBottom: '16px', paddingBottom: '8px', borderBottom: `1px solid rgba(108,171,221,0.2)` }}>
+              {region}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {region.groups.map(group => (
-                <a key={group.name} href={group.website} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'block', textDecoration: 'none', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '16px 20px', transition: 'border-color 0.15s, background 0.15s' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(149,191,229,0.3)'; (e.currentTarget as HTMLElement).style.background = 'rgba(149,191,229,0.05)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
+              {regionMap.get(region)!.map(group => (
+                <a key={group.name} href={group.url} target="_blank" rel="noopener noreferrer" className="tg-fan-card"
+                  style={{ display: 'block', textDecoration: 'none', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '16px 20px' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
                     <div style={{ flex: 1, minWidth: '200px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: TYPE_COLORS[group.type], flexShrink: 0 }} />
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: typeColor(group.type, CLUB_COLOR), flexShrink: 0 }} />
                         <span style={{ fontSize: '15px', fontWeight: 600, color: '#fff' }}>{group.name}</span>
-                        <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: TYPE_COLORS[group.type], opacity: 0.8 }}>{TYPE_LABELS[group.type]}</span>
+                        <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: typeColor(group.type, CLUB_COLOR), opacity: 0.8 }}>{typeLabel(group.type)}</span>
                       </div>
-                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginBottom: '6px' }}>{group.city} · {group.country}</div>
-                      <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{group.description}</div>
+                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginBottom: '6px' }}>{group.city ? `${group.city} · ${group.country}` : group.country}</div>
+                      {group.description && (
+                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{group.description}</div>
+                      )}
                     </div>
                     <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)', flexShrink: 0, paddingTop: '2px' }}>Visit →</div>
                   </div>
@@ -208,7 +159,11 @@ export default function AstonVillaPage() {
           </div>
         ))}
 
-        {/* Missing group CTA */}
+        <style>{`
+          .tg-fan-card { transition: border-color 0.15s, background 0.15s; }
+          .tg-fan-card:hover { border-color: ${CLUB_COLOR}55; background: rgba(255,255,255,0.05); }
+        `}</style>
+
         <div style={{ marginTop: '48px', padding: '28px', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.12)', textAlign: 'center' }}>
           <p style={{ fontSize: '15px', fontWeight: 600, marginBottom: '8px' }}>Is your group missing?</p>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '16px' }}>We're building the most complete directory of Aston Villa fan groups worldwide.</p>

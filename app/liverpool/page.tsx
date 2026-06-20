@@ -1,93 +1,84 @@
-'use client';
-
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+import { supabase } from '../../lib/supabase';
+import ClubMapLoader from '../../components/ClubMapLoader';
 
-const LiverpoolMap = dynamic(() => import('../../components/LiverpoolMap'), {
-  ssr: false,
-  loading: () => (
-    <div style={{
-      width: '100%', height: '100%', background: '#0a0a0a',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: 'rgba(255,255,255,0.3)', fontSize: '13px', letterSpacing: '0.1em',
-    }}>
-      LOADING MAP
-    </div>
-  ),
-});
 
-const SUPPORTER_CLUBS = [
-  {
-    region: 'United Kingdom',
-    groups: [
-      { name: 'Spirit of Shankly', type: 'supporter_club', city: 'Liverpool', country: 'UK', website: 'https://spiritofshankly.com', description: 'Official LFC supporters union. 300,000+ worldwide followers. Represents fans directly to the club.' },
-      { name: 'The Sandon', type: 'fan_bar', city: 'Liverpool', country: 'UK', website: 'https://www.thesandon.co.uk', description: 'The historic pub where Liverpool FC was founded in 1892. A pilgrimage for Reds fans worldwide.' },
-    ]
-  },
-  {
-    region: 'USA',
-    groups: [
-      { name: 'OLSC Boston', type: 'supporter_club', city: 'Boston', country: 'USA', website: 'https://www.lfcboston.com', description: 'Watches at The Phoenix Landing, Cambridge MA and The Greatest Bar, Boston. Est. 2006.' },
-      { name: 'OLSC New York', type: 'supporter_club', city: 'New York', country: 'USA', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in New York City.' },
-      { name: 'OLSC Los Angeles', type: 'supporter_club', city: 'Los Angeles', country: 'USA', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Los Angeles.' },
-      { name: 'OLSC Chicago', type: 'supporter_club', city: 'Chicago', country: 'USA', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Chicago.' },
-    ]
-  },
-  {
-    region: 'Australia',
-    groups: [
-      { name: 'OLSC Sydney', type: 'supporter_club', city: 'Sydney', country: 'Australia', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Sydney.' },
-      { name: 'OLSC Melbourne', type: 'supporter_club', city: 'Melbourne', country: 'Australia', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Melbourne.' },
-    ]
-  },
-  {
-    region: 'Asia',
-    groups: [
-      { name: 'BigReds Indonesia', type: 'supporter_club', city: 'Jakarta', country: 'Indonesia', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official LFC supporters club. LFC opened official retail stores in Jakarta (2024) and Surabaya (2025).' },
-      { name: 'OLSC Singapore', type: 'supporter_club', city: 'Singapore', country: 'Singapore', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Singapore.' },
-      { name: 'OLSC Malaysia', type: 'supporter_club', city: 'Kuala Lumpur', country: 'Malaysia', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Malaysia.' },
-      { name: 'OLSC Thailand', type: 'supporter_club', city: 'Bangkok', country: 'Thailand', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Thailand.' },
-      { name: 'OLSC Maldives', type: 'supporter_club', city: 'Male', country: 'Maldives', website: 'https://www.liverpoolfc.com/news/we-love-you-liverpool-meet-official-lfc-supporters-club-maldives', description: 'Featured by LFC for their passion and community spirit.' },
-    ]
-  },
-  {
-    region: 'Africa',
-    groups: [
-      { name: 'OLSC Nigeria', type: 'supporter_club', city: 'Lagos', country: 'Nigeria', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Nigeria.' },
-      { name: 'OLSC South Africa', type: 'supporter_club', city: 'Johannesburg', country: 'South Africa', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in South Africa.' },
-      { name: 'OLSC Kenya', type: 'supporter_club', city: 'Nairobi', country: 'Kenya', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Kenya.' },
-    ]
-  },
-  {
-    region: 'Europe',
-    groups: [
-      { name: 'OLSC Norway', type: 'supporter_club', city: 'Oslo', country: 'Norway', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Norway.' },
-      { name: 'OLSC Ireland', type: 'supporter_club', city: 'Dublin', country: 'Ireland', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Ireland.' },
-      { name: 'OLSC Germany', type: 'supporter_club', city: 'Berlin', country: 'Germany', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Germany.' },
-    ]
-  },
-  {
-    region: 'South America',
-    groups: [
-      { name: 'OLSC Brazil', type: 'supporter_club', city: 'São Paulo', country: 'Brazil', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Brazil.' },
-      { name: 'OLSC Argentina', type: 'supporter_club', city: 'Buenos Aires', country: 'Argentina', website: 'https://www.liverpoolfc.com/info/official-liverpool-supporters-clubs', description: 'Official Liverpool supporters club in Argentina.' },
-    ]
-  },
-];
+export const revalidate = 3600; // refresh from Supabase at most once per hour
 
-const TYPE_COLORS: Record<string, string> = {
-  supporter_club: '#C8102E',
-  community: '#FFFFFF',
-  fan_bar: '#F97316',
+type FanGroupRow = {
+  name: string;
+  city: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  url: string;
+  description: string | null;
+  region: string | null;
+  type: string | null;
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  supporter_club: 'Supporter club',
-  community: 'Fan community',
-  fan_bar: 'Fan bar',
-};
+function typeColor(type: string | null, clubColor: string) {
+  if (type === 'community') return '#FFFFFF';
+  if (type === 'fan_bar') return '#F97316';
+  return clubColor;
+}
 
-export default function LiverpoolPage() {
+function typeLabel(type: string | null) {
+  if (type === 'community') return 'Fan community';
+  if (type === 'fan_bar') return 'Fan bar';
+  return 'Supporter club';
+}
+
+export default async function LiverpoolPage() {
+  const { data: club } = await supabase
+    .from('clubs')
+    .select('id, color')
+    .eq('slug', 'liverpool')
+    .single();
+
+  if (!club) {
+    return (
+      <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', padding: '40px', fontFamily: "'Inter', sans-serif" }}>
+        Unable to load club data right now.
+      </main>
+    );
+  }
+
+  const CLUB_COLOR = club.color || '#C8102E';
+
+  const { data: groupsData } = await supabase
+    .from('fan_groups')
+    .select('name, city, country, latitude, longitude, url, description, region, type')
+    .eq('club_id', club.id);
+
+  const groups: FanGroupRow[] = groupsData || [];
+
+  const mapGroups = groups
+    .filter(g => g.latitude !== null && g.longitude !== null)
+    .map(g => ({
+      name: g.name,
+      city: g.city,
+      country: g.country,
+      lat: g.latitude as number,
+      lng: g.longitude as number,
+      website: g.url,
+      description: g.description,
+    }));
+
+  const regionMap = new Map<string, FanGroupRow[]>();
+  for (const g of groups) {
+    const region = g.region || 'More worldwide';
+    if (!regionMap.has(region)) regionMap.set(region, []);
+    regionMap.get(region)!.push(g);
+  }
+  const regionOrder = Array.from(regionMap.keys()).sort((a, b) => {
+    if (a === 'United Kingdom') return -1;
+    if (b === 'United Kingdom') return 1;
+    if (a === 'More worldwide') return 1;
+    if (b === 'More worldwide') return -1;
+    return a.localeCompare(b);
+  });
+
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
@@ -96,7 +87,7 @@ export default function LiverpoolPage() {
           <Link href="/" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>← Terrace.</Link>
           <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#C8102E' }} />
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: CLUB_COLOR }} />
             <span style={{ fontSize: '14px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Liverpool</span>
           </div>
         </div>
@@ -105,25 +96,25 @@ export default function LiverpoolPage() {
 
       <section style={{ padding: '60px 32px 48px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, rgba(200,16,46,0.06) 0%, transparent 100%)' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(200,16,46,0.12)', border: '1px solid rgba(200,16,46,0.25)', borderRadius: '999px', padding: '5px 12px', marginBottom: '24px', fontSize: '11px', color: '#C8102E', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#C8102E' }} />
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(200,16,46,0.12)', border: '1px solid rgba(200,16,46,0.25)', borderRadius: '999px', padding: '5px 12px', marginBottom: '24px', fontSize: '11px', color: CLUB_COLOR, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: CLUB_COLOR }} />
             Premier League · Merseyside
           </div>
           <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '16px' }}>
-            Liverpool fans,<br /><span style={{ color: '#C8102E' }}>everywhere on earth.</span>
+            Liverpool fans,<br /><span style={{ color: CLUB_COLOR }}>everywhere on earth.</span>
           </h1>
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find Reds worldwide — 300+ official supporter clubs across 100 countries. You'll Never Walk Alone.
           </p>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <a href="#directory" style={{ background: '#C8102E', color: '#fff', borderRadius: '8px', padding: '11px 22px', fontSize: '14px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>Find a group near you</a>
+            <a href="#directory" style={{ background: CLUB_COLOR, color: '#fff', borderRadius: '8px', padding: '11px 22px', fontSize: '14px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>Find a group near you</a>
             <a href="#map" style={{ background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '11px 22px', fontSize: '14px', fontWeight: 500, textDecoration: 'none', display: 'inline-block' }}>View on map</a>
           </div>
         </div>
       </section>
 
       <section id="map" style={{ height: '480px', position: 'relative', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <LiverpoolMap />
+        <ClubMapLoader groups={mapGroups} color={CLUB_COLOR} />
         <div style={{ position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 16px', fontSize: '12px', color: 'rgba(255,255,255,0.6)', whiteSpace: 'nowrap', zIndex: 10 }}>
           Liverpool fan groups worldwide
         </div>
@@ -134,26 +125,27 @@ export default function LiverpoolPage() {
         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', marginBottom: '48px' }}>
           Official supporter clubs, fan communities and bars worldwide. Click any group to visit their site.
         </p>
-        {SUPPORTER_CLUBS.map(region => (
-          <div key={region.region} style={{ marginBottom: '48px' }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#C8102E', marginBottom: '16px', paddingBottom: '8px', borderBottom: '1px solid rgba(200,16,46,0.2)' }}>
-              {region.region}
+        {regionOrder.map(region => (
+          <div key={region} style={{ marginBottom: '48px' }}>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: CLUB_COLOR, marginBottom: '16px', paddingBottom: '8px', borderBottom: `1px solid rgba(108,171,221,0.2)` }}>
+              {region}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {region.groups.map(group => (
-                <a key={group.name} href={group.website} target="_blank" rel="noopener noreferrer" style={{ display: 'block', textDecoration: 'none', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '16px 20px', transition: 'border-color 0.15s, background 0.15s' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(200,16,46,0.3)'; (e.currentTarget as HTMLElement).style.background = 'rgba(200,16,46,0.05)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'; }}
+              {regionMap.get(region)!.map(group => (
+                <a key={group.name} href={group.url} target="_blank" rel="noopener noreferrer" className="tg-fan-card"
+                  style={{ display: 'block', textDecoration: 'none', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '16px 20px' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
                     <div style={{ flex: 1, minWidth: '200px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: TYPE_COLORS[group.type], flexShrink: 0 }} />
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: typeColor(group.type, CLUB_COLOR), flexShrink: 0 }} />
                         <span style={{ fontSize: '15px', fontWeight: 600, color: '#fff' }}>{group.name}</span>
-                        <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: TYPE_COLORS[group.type], opacity: 0.8 }}>{TYPE_LABELS[group.type]}</span>
+                        <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: typeColor(group.type, CLUB_COLOR), opacity: 0.8 }}>{typeLabel(group.type)}</span>
                       </div>
-                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginBottom: '6px' }}>{group.city} · {group.country}</div>
-                      <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{group.description}</div>
+                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginBottom: '6px' }}>{group.city ? `${group.city} · ${group.country}` : group.country}</div>
+                      {group.description && (
+                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{group.description}</div>
+                      )}
                     </div>
                     <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)', flexShrink: 0, paddingTop: '2px' }}>Visit →</div>
                   </div>
@@ -162,10 +154,16 @@ export default function LiverpoolPage() {
             </div>
           </div>
         ))}
+
+        <style>{`
+          .tg-fan-card { transition: border-color 0.15s, background 0.15s; }
+          .tg-fan-card:hover { border-color: ${CLUB_COLOR}55; background: rgba(255,255,255,0.05); }
+        `}</style>
+
         <div style={{ marginTop: '48px', padding: '28px', borderRadius: '12px', border: '1px dashed rgba(255,255,255,0.12)', textAlign: 'center' }}>
           <p style={{ fontSize: '15px', fontWeight: 600, marginBottom: '8px' }}>Is your group missing?</p>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '16px' }}>We're building the most complete directory of Liverpool fan groups worldwide.</p>
-          <a href="mailto:hello@terrace.global" style={{ display: 'inline-block', background: '#C8102E', color: '#fff', borderRadius: '7px', padding: '9px 20px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>Add your group</a>
+          <a href="mailto:hello@terrace.global" style={{ display: 'inline-block', background: CLUB_COLOR, color: '#fff', borderRadius: '7px', padding: '9px 20px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>Add your group</a>
         </div>
       </section>
 
