@@ -29,15 +29,7 @@ const CLUBS = [
 ];
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const [activeClub, setActiveClub] = useState('Arsenal');
-
-  function handleSubmit() {
-    if (email) {
-      setSubmitted(true);
-    }
-  }
 
   return (
     <main className="min-h-screen bg-black text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -57,7 +49,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#EF4444' }} />
           <span style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-            Terrace.Global
+            The Terrace
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
@@ -175,40 +167,6 @@ export default function Home() {
         </Link>
       </section>
 
-      <section style={{ padding: '80px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, marginBottom: '12px' }}>
-          Join the waitlist
-        </h2>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '16px', marginBottom: '32px' }}>
-          Be first when your club launches on Terrace.
-        </p>
-        {submitted ? (
-          <div style={{ color: '#EF4444', fontWeight: 600, fontSize: '16px' }}>
-            You&apos;re on the list. We&apos;ll be in touch.
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              style={{
-                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: '8px', padding: '12px 18px', fontSize: '15px', color: '#fff',
-                outline: 'none', width: '280px',
-              }}
-            />
-            <button onClick={handleSubmit} style={{
-              background: '#EF4444', color: '#fff', border: 'none', borderRadius: '8px',
-              padding: '12px 24px', fontSize: '15px', fontWeight: 600, cursor: 'pointer',
-            }}>
-              Join waitlist
-            </button>
-          </div>
-        )}
-      </section>
-
       <footer style={{
         padding: '32px', borderTop: '1px solid rgba(255,255,255,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
@@ -216,7 +174,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
           <span style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            Terrace.Global
+            The Terrace
           </span>
         </div>
         <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)' }}>
