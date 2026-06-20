@@ -69,16 +69,6 @@ export default function Home() {
       </nav>
 
       <section style={{ padding: '100px 32px 80px', maxWidth: '860px', margin: '0 auto', textAlign: 'center' }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: '8px',
-          background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)',
-          borderRadius: '999px', padding: '6px 14px', marginBottom: '32px',
-          fontSize: '12px', color: '#EF4444', fontWeight: 500, letterSpacing: '0.06em',
-        }}>
-          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444', animation: 'pulse 2s infinite' }} />
-          Launching pre-season 2026 · Arsenal first
-        </div>
-
         <h1 style={{ fontSize: 'clamp(42px, 8vw, 80px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '24px' }}>
           Football fans,{' '}
           <span style={{ color: '#EF4444' }}>everywhere on earth.</span>
@@ -234,12 +224,6 @@ export default function Home() {
         </span>
       </footer>
 
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-      `}</style>
     </main>
   );
 }
