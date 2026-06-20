@@ -6,25 +6,22 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
-const MANCITY_COLOR = '#6CABDD';
+type FanGroup = {
+  name: string;
+  city: string | null;
+  country: string | null;
+  lat: number;
+  lng: number;
+  website: string;
+  description: string | null;
+};
 
-const MANCITY_GROUPS = [
-  { name: 'Chicago MCFC', city: 'Chicago', country: 'USA', lat: 41.8781, lng: -87.6298, website: 'http://www.chicagomcfc.org/', description: 'Official Man City supporters branch in Chicago. One of the most active City groups in North America.' },
-  { name: 'MCFC Boston', city: 'Boston', country: 'USA', lat: 42.3601, lng: -71.0589, website: 'http://www.mcfcboston.com/', description: 'Official Manchester City supporters club in Boston, Massachusetts.' },
-  { name: 'Man City Atlanta Cityzens', city: 'Atlanta', country: 'USA', lat: 33.7490, lng: -84.3880, website: 'http://www.mancityatlcityzens.com/', description: 'Official Man City supporters branch serving the Atlanta metro area.' },
-  { name: 'Man City Switzerland', city: 'Zurich', country: 'Switzerland', lat: 47.3769, lng: 8.5417, website: 'https://www.mancityswisssupporters.com/', description: 'Official Manchester City supporters club for fans across Switzerland.' },
-  { name: 'Man City Scandinavia', city: 'Oslo', country: 'Norway', lat: 59.9139, lng: 10.7522, website: 'http://www.manchestercity.no/', description: 'Official MCFC supporters branch for City fans across Scandinavia, based in Norway.' },
-  { name: 'MCFC Australia', city: 'Australia', country: 'Australia', lat: -25.2744, lng: 133.7751, website: 'https://www.mcfcaustralia.com.au/', description: 'Founded in 2003 by fans for fans. The home of Manchester City FC in Australia.' },
-  { name: 'Man City OSC (Official)', city: 'Manchester', country: 'UK', lat: 53.4831, lng: -2.2006, website: 'https://www.mancityosc.com/', description: 'The official Manchester City Supporters Club, formed in 1949. Over 240 branches worldwide.' },
-  
-  { name: 'Dukinfield Blues', city: 'Dukinfield', country: 'UK', lat: 53.4741, lng: -2.0897, website: 'https://www.dukinfieldmcfc.co.uk/', description: 'Official MCFC supporters branch serving the Dukinfield area of Greater Manchester.' },
-  { name: 'Hazel Grove Blues', city: 'Hazel Grove', country: 'UK', lat: 53.3741, lng: -2.1197, website: 'http://www.hazelgroveblues.co.uk/', description: 'Official supporters branch for Man City fans in the Hazel Grove and Stockport area.' },
-  { name: 'Northenden Blues', city: 'Northenden', country: 'UK', lat: 53.4066, lng: -2.2469, website: 'http://www.northendenblues.com/', description: 'Official MCFC supporters branch in the Northenden area of South Manchester.' },
-  { name: 'Reddish Blues', city: 'Reddish', country: 'UK', lat: 53.4441, lng: -2.1624, website: 'http://www.reddishblues.com/', description: 'Official Manchester City supporters branch based in Reddish, Stockport.' },
-  { name: 'Wessex Blues', city: 'South England', country: 'UK', lat: 51.0577, lng: -1.4000, website: 'http://wessexblues.co.uk/', description: 'Official MCFC supporters branch serving City fans across the Wessex region.' },
-];
+type Props = {
+  groups: FanGroup[];
+  color?: string;
+};
 
-export default function ManCityMap() {
+export default function ManCityMap({ groups, color = '#6CABDD' }: Props) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const popup = useRef<mapboxgl.Popup | null>(null);
@@ -49,7 +46,7 @@ export default function ManCityMap() {
 
       const geojson: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
-        features: MANCITY_GROUPS.map(g => ({
+        features: groups.map(g => ({
           type: 'Feature',
           geometry: { type: 'Point', coordinates: [g.lng, g.lat] },
           properties: { name: g.name, city: g.city, country: g.country, website: g.website, description: g.description },
@@ -59,7 +56,7 @@ export default function ManCityMap() {
       m.addSource('city-fans', { type: 'geojson', data: geojson, cluster: true, clusterMaxZoom: 8, clusterRadius: 50 });
 
       m.addLayer({ id: 'clusters', type: 'circle', source: 'city-fans', filter: ['has', 'point_count'],
-        paint: { 'circle-color': MANCITY_COLOR, 'circle-radius': ['step', ['get', 'point_count'], 20, 5, 28, 20, 36], 'circle-opacity': 0.9, 'circle-stroke-width': 2, 'circle-stroke-color': '#ffffff', 'circle-stroke-opacity': 0.3 }
+        paint: { 'circle-color': color, 'circle-radius': ['step', ['get', 'point_count'], 20, 5, 28, 20, 36], 'circle-opacity': 0.9, 'circle-stroke-width': 2, 'circle-stroke-color': '#ffffff', 'circle-stroke-opacity': 0.3 }
       });
 
       m.addLayer({ id: 'cluster-count', type: 'symbol', source: 'city-fans', filter: ['has', 'point_count'],
@@ -68,7 +65,7 @@ export default function ManCityMap() {
       });
 
       m.addLayer({ id: 'fan-pins', type: 'circle', source: 'city-fans', filter: ['!', ['has', 'point_count']],
-        paint: { 'circle-color': MANCITY_COLOR, 'circle-radius': 7, 'circle-stroke-width': 2, 'circle-stroke-color': '#000000', 'circle-opacity': 0.95 }
+        paint: { 'circle-color': color, 'circle-radius': 7, 'circle-stroke-width': 2, 'circle-stroke-color': '#000000', 'circle-opacity': 0.95 }
       });
 
       m.on('click', 'clusters', (e) => {
@@ -118,7 +115,7 @@ export default function ManCityMap() {
         .tg-popup-name { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 2px; }
         .tg-popup-city { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
         .tg-popup-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; margin-bottom: 10px; }
-        .tg-popup-btn { display: block; width: 100%; background: ${MANCITY_COLOR}; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; box-sizing: border-box; }
+        .tg-popup-btn { display: block; width: 100%; background: ${color}; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; box-sizing: border-box; }
         .tg-popup-btn:hover { background: #4a8fbf; }
       `}</style>
     </div>
