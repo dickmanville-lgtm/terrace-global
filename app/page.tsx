@@ -1,34 +1,31 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 
 const CLUBS = [
-  { name: 'Arsenal', active: true, url: '/arsenal'},
-  { name: 'Liverpool', active: true, url: '/liverpool' },
-  { name: 'Man United', active: true, url: '/manchester-united' },
-  { name: 'Chelsea', active: true, url: '/chelsea' },
-  { name: 'Manchester City', url: '/manchester-city'},
-  { name: 'Spurs', active: true, url: '/spurs' },
-  { name: 'Newcastle', active: true, url: '/newcastle' },
-  { name: 'Aston Villa', active: true, url: '/aston-villa' },
-  { name: 'Bournemouth', active: true, url: '/bournemouth' },
-  { name: 'Sunderland', active: true, url: '/sunderland' },
-  { name: 'Brighton', active: true, url: '/brighton' },
-  { name: 'Crystal Palace', active: true, url: '/crystal-palace' },
-  { name: 'Brentford', active: true, url: '/brentford' },
-  { name: 'Everton', active: true, url: '/everton' },
-  { name: 'Nottingham Forest', active: true, url: '/nottingham-forest' },
-  { name: 'Leeds United', active: true, url: '/leeds' },
-  { name: 'Coventry City', active: true, url: '/coventry' },
-  { name: 'Hull City', active: true, url: '/hull' },
-  { name: 'Ipswich Town', active: true, url: '/ipswich' },
-  { name: 'Celtic', active: true, url: '/celtic' },
-  { name: 'Rangers', active: true, url: '/rangers' },
-  { name: 'Barcelona', active: false },
-  { name: 'Real Madrid', active: false },
-  { name: 'Bayern Munich', active: false },
-  { name: 'PSG', active: false },
+  { name: 'Arsenal', url: '/arsenal' },
+  { name: 'Aston Villa', url: '/aston-villa' },
+  { name: 'Bournemouth', url: '/bournemouth' },
+  { name: 'Brentford', url: '/brentford' },
+  { name: 'Brighton', url: '/brighton' },
+  { name: 'Celtic', url: '/celtic' },
+  { name: 'Chelsea', url: '/chelsea' },
+  { name: 'Coventry City', url: '/coventry' },
+  { name: 'Crystal Palace', url: '/crystal-palace' },
+  { name: 'Everton', url: '/everton' },
+  { name: 'Fulham', url: '/fulham' },
+  { name: 'Hull City', url: '/hull' },
+  { name: 'Ipswich Town', url: '/ipswich' },
+  { name: 'Leeds United', url: '/leeds' },
+  { name: 'Liverpool', url: '/liverpool' },
+  { name: 'Man United', url: '/manchester-united' },
+  { name: 'Manchester City', url: '/manchester-city' },
+  { name: 'Newcastle', url: '/newcastle' },
+  { name: 'Nottingham Forest', url: '/nottingham-forest' },
+  { name: 'Rangers', url: '/rangers' },
+  { name: 'Spurs', url: '/spurs' },
+  { name: 'Sunderland', url: '/sunderland' },
 ];
 
 export default function Home() {
@@ -65,17 +62,9 @@ export default function Home() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
           <div style={{ display: 'flex', gap: '28px', fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>
-            <Link href="/fan-map" style={{ color: 'inherit', textDecoration: 'none' }}>Fan map</Link>
-            <span style={{ cursor: 'pointer' }}>Clubs</span>
-            <span style={{ cursor: 'pointer' }}>Matchday</span>
-            <span style={{ cursor: 'pointer' }} onClick={() => window.location.href='/club-map'}>Club Map</span>
+            <Link href="/fan-map" style={{ color: 'inherit', textDecoration: 'none' }}>Fan Map</Link>
+            <Link href="/club-map" style={{ color: 'inherit', textDecoration: 'none' }}>Club Map</Link>
           </div>
-          <button style={{
-            background: '#EF4444', color: '#fff', border: 'none', borderRadius: '6px',
-            padding: '8px 18px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-          }}>
-            Join the terrace
-          </button>
         </div>
       </nav>
 
@@ -87,7 +76,7 @@ export default function Home() {
           fontSize: '12px', color: '#EF4444', fontWeight: 500, letterSpacing: '0.06em',
         }}>
           <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444', animation: 'pulse 2s infinite' }} />
-          Launching pre-season 2026 ┬╖ Arsenal first
+          Launching pre-season 2026 · Arsenal first
         </div>
 
         <h1 style={{ fontSize: 'clamp(42px, 8vw, 80px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '24px' }}>
@@ -97,7 +86,7 @@ export default function Home() {
 
         <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 48px' }}>
           The global home for football supporters. Find your people, follow your club,
-          and never watch alone ΓÇö wherever you are in the world.
+          and never watch alone — wherever you are in the world.
         </p>
 
         <p style={{
@@ -106,7 +95,7 @@ export default function Home() {
   fontWeight: 600,
   letterSpacing: '0.02em',
 }}>
-  Γåô Select your club below to explore your fan map
+  ↓ Select your club below to explore your fan map
 </p>
       </section>
 
@@ -176,7 +165,7 @@ export default function Home() {
                   background: '#EF4444', color: '#fff', borderRadius: '8px',
                   padding: '10px 24px', fontSize: '14px', fontWeight: 600, marginTop: '8px',
                 }}>
-                  Open the map ΓåÆ
+                  Open the map →
                 </div>
               </div>
             </div>
