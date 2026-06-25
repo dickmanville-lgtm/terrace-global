@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
 import ClubMapLoader from '../../components/ClubMapLoader';
+import SiteNav from '../../components/SiteNav';
 
 
 export const revalidate = 3600; // refresh from Supabase at most once per hour
@@ -83,17 +84,7 @@ export default async function SunderlandPage() {
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Nav */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'sticky', top: 0, background: 'rgba(10,10,10,0.95)', backdropFilter: 'blur(12px)', zIndex: 100 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Link href="/" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>← Terrace.</Link>
-          <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: CLUB_COLOR }} />
-            <span style={{ fontSize: '14px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Sunderland AFC</span>
-          </div>
-        </div>
-        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>The Black Cats · Est. 1879</div>
-      </nav>
+      <SiteNav active="club-map" club={{ name: 'Sunderland AFC', color: CLUB_COLOR, tagline: 'The Black Cats · Est. 1879' }} />
 
       {/* Hero */}
       <section style={{ padding: '60px 32px 48px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: `linear-gradient(180deg, rgba(235,23,43,0.06) 0%, transparent 100%)` }}>
