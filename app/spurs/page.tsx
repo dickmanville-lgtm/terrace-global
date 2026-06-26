@@ -91,7 +91,7 @@ export default async function SpursPage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(19,34,87,0.12)', border: '1px solid rgba(19,34,87,0.25)', borderRadius: '999px', padding: '5px 12px', marginBottom: '24px', fontSize: '11px', color: '#4f6acd', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#4f6acd' }} />
-            Premier League · London
+            London
           </div>
           <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '16px' }}>
             Spurs fans,<br /><span style={{ color: '#4f6acd' }}>all over the world.</span>

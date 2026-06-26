@@ -99,7 +99,7 @@ export default async function ArsenalPage() {
             fontSize: '11px', color: CLUB_COLOR, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
           }}>
             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: CLUB_COLOR }} />
-            Premier League · North London
+            North London
           </div>
 
           <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '16px' }}>

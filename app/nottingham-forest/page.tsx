@@ -91,7 +91,7 @@ export default async function NottinghamForestPage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(221,0,0,0.12)', border: '1px solid rgba(221,0,0,0.25)', borderRadius: '999px', padding: '5px 12px', marginBottom: '24px', fontSize: '11px', color: CLUB_COLOR, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: CLUB_COLOR }} />
-            Premier League · Nottingham
+            Nottingham
           </div>
           <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '16px' }}>
             Forest fans,<br /><span style={{ color: CLUB_COLOR }}>all over the world.</span>
