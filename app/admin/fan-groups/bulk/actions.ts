@@ -18,6 +18,9 @@ type BulkRow = {
   region: string
   url: string
   description: string
+  instagram_url: string
+  facebook_url: string
+  tiktok_url: string
   latitude: string
   longitude: string
 }
@@ -57,6 +60,9 @@ export async function bulkCreateFanGroups(rows: BulkRow[]) {
       region: r.region,
       url: r.url || null,
       description: r.description || null,
+      instagram_url: r.instagram_url || null,
+      facebook_url: r.facebook_url || null,
+      tiktok_url: r.tiktok_url || null,
       latitude: lat !== null && !isNaN(lat) ? lat : null,
       longitude: lng !== null && !isNaN(lng) ? lng : null,
     })

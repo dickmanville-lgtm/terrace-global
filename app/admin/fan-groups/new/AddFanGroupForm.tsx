@@ -35,6 +35,10 @@ export default function AddFanGroupForm({ clubs }: { clubs: Club[] }) {
   const [url, setUrl] = useState('https://')
   const [description, setDescription] = useState('')
 
+  const [instagramUrl, setInstagramUrl] = useState('')
+  const [facebookUrl, setFacebookUrl] = useState('')
+  const [tiktokUrl, setTiktokUrl] = useState('')
+
   const [address, setAddress] = useState('')
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
@@ -87,6 +91,9 @@ export default function AddFanGroupForm({ clubs }: { clubs: Club[] }) {
       region,
       url,
       description,
+      instagram_url: instagramUrl,
+      facebook_url: facebookUrl,
+      tiktok_url: tiktokUrl,
       latitude: latitude ? parseFloat(latitude) : null,
       longitude: longitude ? parseFloat(longitude) : null,
     })
@@ -96,6 +103,7 @@ export default function AddFanGroupForm({ clubs }: { clubs: Club[] }) {
       setSubmitMessage(`Added "${name}" to ${club.name}.`)
       setName(''); setType('supporter_club'); setCity(''); setCountry(''); setRegion('')
 setUrl('https://'); setDescription(''); setAddress(''); setLatitude(''); setLongitude('')
+      setInstagramUrl(''); setFacebookUrl(''); setTiktokUrl('')
       setGeocodeStatus('idle'); setGeocodeLabel('')
     } else {
       setSubmitStatus('error')
@@ -165,6 +173,19 @@ setUrl('https://'); setDescription(''); setAddress(''); setLatitude(''); setLong
 
       <label style={labelStyle}>Website / social link</label>
       <input type="url" value={url} onChange={e => setUrl(e.target.value)} style={inputStyle} placeholder="https://..." />
+
+      <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginTop: '-4px', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        Social media (optional)
+      </p>
+
+      <label style={labelStyle}>Instagram</label>
+      <input type="url" value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} style={inputStyle} placeholder="https://instagram.com/..." />
+
+      <label style={labelStyle}>Facebook</label>
+      <input type="url" value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} style={inputStyle} placeholder="https://facebook.com/..." />
+
+      <label style={labelStyle}>TikTok</label>
+      <input type="url" value={tiktokUrl} onChange={e => setTiktokUrl(e.target.value)} style={inputStyle} placeholder="https://tiktok.com/@..." />
 
       <label style={labelStyle}>Description (optional)</label>
       <textarea value={description} onChange={e => setDescription(e.target.value)} style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }} />

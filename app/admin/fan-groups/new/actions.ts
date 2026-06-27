@@ -13,6 +13,9 @@ type CreateFanGroupInput = {
   region: string
   url: string
   description: string
+  instagram_url: string
+  facebook_url: string
+  tiktok_url: string
   latitude: number | null
   longitude: number | null
 }
@@ -27,6 +30,9 @@ export async function createFanGroup(input: CreateFanGroupInput) {
     region: input.region,
     url: input.url || null,
     description: input.description || null,
+    instagram_url: input.instagram_url || null,
+    facebook_url: input.facebook_url || null,
+    tiktok_url: input.tiktok_url || null,
     latitude: input.latitude,
     longitude: input.longitude,
   })

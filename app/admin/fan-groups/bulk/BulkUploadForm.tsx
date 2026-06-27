@@ -18,6 +18,9 @@ type ParsedRow = {
   region: string
   url: string
   description: string
+  instagram_url: string
+  facebook_url: string
+  tiktok_url: string
   latitude: string
   longitude: string
   issues: string[]
@@ -88,6 +91,7 @@ export default function BulkUploadForm() {
       return {
         club_slug: obj.club_slug, name: obj.name, type: obj.type, city: obj.city,
         country: obj.country, region: obj.region, url: obj.url, description: obj.description,
+        instagram_url: obj.instagram_url || '', facebook_url: obj.facebook_url || '', tiktok_url: obj.tiktok_url || '',
         latitude: obj.latitude, longitude: obj.longitude, issues,
       }
     })
@@ -130,6 +134,8 @@ export default function BulkUploadForm() {
         <>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '12px', lineHeight: 1.6 }}>
             Paste CSV with these columns (any order): <code style={{ color: 'rgba(255,255,255,0.7)' }}>club_slug, name, type, city, country, region, url, description, latitude, longitude</code>
+            <br />
+            Optional columns: <code style={{ color: 'rgba(255,255,255,0.7)' }}>instagram_url, facebook_url, tiktok_url</code> — leave them out of the CSV entirely if not needed, no need for blank columns.
           </p>
           <textarea
             value={csvText}
