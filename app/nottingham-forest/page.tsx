@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import ClubMapLoader from '../../components/ClubMapLoader';
 import SiteNav from '../../components/SiteNav';
 import FanGroupDirectory, { type FanGroupRow } from '../../components/FanGroupDirectory';
+import HeroActionButtons from '../../components/HeroActionButtons';
 
 
 export const revalidate = 3600; // refresh from Supabase at most once per hour
@@ -26,7 +27,7 @@ export default async function NottinghamForestPage() {
 
   const { data: groupsData } = await supabase
     .from('fan_groups')
-    .select('name, city, country, latitude, longitude, url, description, region, type')
+    .select('name, city, country, latitude, longitude, url, description, region, type, instagram_url, facebook_url, tiktok_url')
     .eq('club_id', club.id);
 
   const groups: FanGroupRow[] = groupsData || [];
@@ -47,7 +48,7 @@ export default async function NottinghamForestPage() {
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Nav */}
-      <SiteNav active="club-map" club={{ name: 'Nottingham Forest', color: CLUB_COLOR, tagline: 'The Tricky Trees · Est. 1865' }} />
+      <SiteNav active="supporter-groups" club={{ name: 'Nottingham Forest', color: CLUB_COLOR, tagline: 'The Tricky Trees · Est. 1865' }} />
 
       {/* Hero */}
       <section style={{ padding: '60px 32px 48px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: `linear-gradient(180deg, rgba(221,0,0,0.06) 0%, transparent 100%)` }}>
@@ -62,10 +63,7 @@ export default async function NottinghamForestPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Tricky Trees fans worldwide — 50+ branches spanning the globe. We've Got The Whole World In Our Hands.
           </p>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <a href="#directory" style={{ background: CLUB_COLOR, color: '#fff', borderRadius: '8px', padding: '11px 22px', fontSize: '14px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>Find a group near you</a>
-            <a href="#map" style={{ background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '11px 22px', fontSize: '14px', fontWeight: 500, textDecoration: 'none', display: 'inline-block' }}>View on map</a>
-          </div>
+                    <HeroActionButtons clubColor={CLUB_COLOR} />
         </div>
       </section>
 
