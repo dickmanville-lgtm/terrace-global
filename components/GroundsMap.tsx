@@ -190,8 +190,7 @@ export default function GroundsMap() {
               <span style="font-size:12px;color:#aaa">${props.stadium}</span><br/>
               <span style="font-size:12px;color:#aaa">${props.city}</span><br/><br/>
               <button onclick="window.open('${props.website}','_blank')" style="background:#fff;color:#000;border:none;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px">
-                Visit club website →
-              </button>
+                Visit club website &rarr;</button>
             </div>`
           )
           .addTo(map.current!);
