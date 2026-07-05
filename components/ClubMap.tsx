@@ -12,14 +12,44 @@ type FanGroup = {
   country: string | null;
   lat: number;
   lng: number;
-  website: string;
+  website?: string | null;
   description: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  tiktok?: string | null;
 };
 
 type Props = {
   groups: FanGroup[];
   color?: string;
 };
+
+// Escape text for safe injection into popup HTML (setHTML renders raw HTML).
+function esc(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Only allow http/https links, and escape them for use in an href attribute.
+// Returns null for anything blank, non-http, or otherwise unusable.
+function safeUrl(value: unknown): string | null {
+  const s = String(value ?? '').trim();
+  if (!s) return null;
+  if (!/^https?:\/\//i.test(s)) return null;
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function hasAnyLink(g: FanGroup): boolean {
+  return Boolean(g.website || g.facebook || g.instagram || g.tiktok);
+}
 
 export default function ClubMap({ groups, color = '#6CABDD' }: Props) {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -28,6 +58,10 @@ export default function ClubMap({ groups, color = '#6CABDD' }: Props) {
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
+
+    // Only map groups that have at least one live link - a pin with no link
+    // to click is not useful, so it is not shown.
+    const linked = groups.filter(hasAnyLink);
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -46,10 +80,19 @@ export default function ClubMap({ groups, color = '#6CABDD' }: Props) {
 
       const geojson: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
-        features: groups.map(g => ({
+        features: linked.map(g => ({
           type: 'Feature',
           geometry: { type: 'Point', coordinates: [g.lng, g.lat] },
-          properties: { name: g.name, city: g.city, country: g.country, website: g.website, description: g.description },
+          properties: {
+            name: g.name ?? '',
+            city: g.city ?? '',
+            country: g.country ?? '',
+            description: g.description ?? '',
+            website: g.website ?? '',
+            facebook: g.facebook ?? '',
+            instagram: g.instagram ?? '',
+            tiktok: g.tiktok ?? '',
+          },
         })),
       };
 
@@ -80,17 +123,49 @@ export default function ClubMap({ groups, color = '#6CABDD' }: Props) {
       m.on('click', 'fan-pins', (e) => {
         const feature = e.features?.[0];
         if (!feature) return;
-        const props = feature.properties!;
+        const p = feature.properties!;
         const coords = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
         if (popup.current) popup.current.remove();
+
+        // City &middot; Country - omit the separator if one side is missing.
+        const locationParts = [p.city, p.country]
+          .filter((x: unknown) => x && String(x).trim())
+          .map((x: unknown) => esc(x));
+        const locationHtml = locationParts.length
+          ? `<div class="tg-popup-city">${locationParts.join(' &middot; ')}</div>`
+          : '';
+
+        const descHtml = p.description && String(p.description).trim()
+          ? `<div class="tg-popup-desc">${esc(p.description)}</div>`
+          : '';
+
+        // Build one button per present link, in order: Website, Facebook, Instagram, TikTok.
+        const buttons: string[] = [];
+        const addButton = (raw: unknown, label: string) => {
+          const url = safeUrl(raw);
+          if (url) {
+            buttons.push(
+              `<a class="tg-popup-btn" href="${url}" target="_blank" rel="noopener noreferrer">${label} &rarr;</a>`
+            );
+          }
+        };
+        addButton(p.website, 'Website');
+        addButton(p.facebook, 'Facebook');
+        addButton(p.instagram, 'Instagram');
+        addButton(p.tiktok, 'TikTok');
+
+        const linksHtml = buttons.length
+          ? `<div class="tg-popup-links">${buttons.join('')}</div>`
+          : '';
+
         popup.current = new mapboxgl.Popup({ closeButton: false, maxWidth: '260px', offset: 14, className: 'tg-popup' })
           .setLngLat(coords)
           .setHTML(`
             <div class="tg-popup-inner">
-              <div class="tg-popup-name">${props.name}</div>
-              <div class="tg-popup-city">${props.city} · ${props.country}</div>
-              <div class="tg-popup-desc">${props.description}</div>
-              <a class="tg-popup-btn" href="${props.website}" target="_blank" rel="noopener noreferrer">Visit group →</a>
+              <div class="tg-popup-name">${esc(p.name)}</div>
+              ${locationHtml}
+              ${descHtml}
+              ${linksHtml}
             </div>
           `)
           .addTo(m);
@@ -115,8 +190,9 @@ export default function ClubMap({ groups, color = '#6CABDD' }: Props) {
         .tg-popup-name { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 2px; }
         .tg-popup-city { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
         .tg-popup-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; margin-bottom: 10px; }
+        .tg-popup-links { display: flex; flex-direction: column; gap: 6px; }
         .tg-popup-btn { display: block; width: 100%; background: ${color}; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; box-sizing: border-box; }
-        .tg-popup-btn:hover { background: #4a8fbf; }
+        .tg-popup-btn:hover { filter: brightness(0.9); }
       `}</style>
     </div>
   );

@@ -21,8 +21,11 @@ type FanGroup = {
   country: string | null;
   lat: number;
   lng: number;
-  website: string;
+  website?: string | null;
   description: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  tiktok?: string | null;
 };
 
 export default function ClubMapLoader({ groups, color }: { groups: FanGroup[]; color?: string }) {
