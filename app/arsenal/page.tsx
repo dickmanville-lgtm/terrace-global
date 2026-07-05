@@ -42,15 +42,18 @@ export default async function ArsenalPage() {
       lat: g.latitude as number,
       lng: g.longitude as number,
       website: g.url,
+      facebook: g.facebook_url,
+      instagram: g.instagram_url,
+      tiktok: g.tiktok_url,
       description: g.description,
     }));
 
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
-      <SiteNav active="supporter-groups" club={{ name: 'Arsenal', color: CLUB_COLOR, tagline: 'The Gunners · Est. 1886' }} />
+      <SiteNav active="supporter-groups" club={{ name: 'Arsenal', color: CLUB_COLOR, tagline: 'The Gunners Â· Est. 1886' }} />
 
-      {/* ── Hero ── */}
+      {/* â”€â”€ Hero â”€â”€ */}
       <section style={{
         padding: '60px 32px 48px',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -73,20 +76,20 @@ export default async function ArsenalPage() {
           </h1>
 
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
-            Find Gooners worldwide — supporter clubs, fan communities and bars showing Arsenal matches wherever you are.
+            Find Gooners worldwide â€” supporter clubs, fan communities and bars showing Arsenal matches wherever you are.
           </p>
 
           <HeroActionButtons clubColor={CLUB_COLOR} />
         </div>
       </section>
 
-      {/* ── Map ── */}
+      {/* â”€â”€ Map â”€â”€ */}
       <section id="map" style={{ height: '480px', position: 'relative', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <ClubMapLoader groups={mapGroups} color={CLUB_COLOR} />
         
       </section>
 
-      {/* ── Directory ── */}
+      {/* â”€â”€ Directory â”€â”€ */}
       <section id="directory" style={{ padding: '64px 32px', maxWidth: '960px', margin: '0 auto' }}>
         <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Fan group directory</h2>
         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', marginBottom: '48px' }}>
@@ -113,16 +116,16 @@ export default async function ArsenalPage() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
+      {/* â”€â”€ Footer â”€â”€ */}
       <footer style={{
         padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
       }}>
         <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>
-          ← Back to Terrace.
+          â† Back to Terrace.
         </Link>
         <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>
-          Terrace. · Arsenal · The global home for football fans
+          Terrace. Â· Arsenal Â· The global home for football fans
         </span>
       </footer>
 
