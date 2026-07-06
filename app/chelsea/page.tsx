@@ -41,6 +41,9 @@ export default async function ChelseaPage() {
       lat: g.latitude as number,
       lng: g.longitude as number,
       website: g.url,
+      facebook: g.facebook_url,
+      instagram: g.instagram_url,
+      tiktok: g.tiktok_url,
       description: g.description,
     }));
 
@@ -48,7 +51,7 @@ export default async function ChelseaPage() {
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
       {/* Nav */}
-      <SiteNav active="supporter-groups" club={{ name: 'Chelsea', color: CLUB_COLOR, tagline: 'The Blues · Est. 1905' }} />
+      <SiteNav active="supporter-groups" club={{ name: 'Chelsea', color: CLUB_COLOR, tagline: 'The Blues Â· Est. 1905' }} />
 
       {/* Hero */}
       <section style={{ padding: '60px 32px 48px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: `linear-gradient(180deg, rgba(3,70,148,0.06) 0%, transparent 100%)` }}>
@@ -61,7 +64,7 @@ export default async function ChelseaPage() {
             Blues fans,<br /><span style={{ color: CLUB_COLOR }}>all over the world.</span>
           </h1>
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
-            Find fellow Blues worldwide — 500+ official supporter clubs across 100+ countries. Keep the blue flag flying high.
+            Find fellow Blues worldwide â€” 500+ official supporter clubs across 100+ countries. Keep the blue flag flying high.
           </p>
                     <HeroActionButtons clubColor={CLUB_COLOR} />
         </div>
@@ -92,8 +95,8 @@ export default async function ChelseaPage() {
 
       {/* Footer */}
       <footer style={{ padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>← Back to Terrace.</Link>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>Terrace. · Chelsea · Keep the Blue Flag Flying High</span>
+        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>â† Back to Terrace.</Link>
+        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>Terrace. Â· Chelsea Â· Keep the Blue Flag Flying High</span>
       </footer>
 
     </main>
