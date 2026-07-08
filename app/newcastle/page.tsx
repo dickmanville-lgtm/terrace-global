@@ -9,7 +9,7 @@ import HeroActionButtons from '../../components/HeroActionButtons';
 const CLUB_COLOR = '#241F20';
 const CLUB_COLOR_LIGHT = '#8B8B8B';
 
-export const revalidate = 3600; // refresh from Supabase at most once per hour
+export const revalidate = 60; // refresh from Supabase at most once per minute
 
 export default async function NewcastlePage() {
   const { data: club } = await supabase

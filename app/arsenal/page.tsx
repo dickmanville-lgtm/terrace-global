@@ -6,7 +6,7 @@ import FanGroupDirectory, { type FanGroupRow } from '../../components/FanGroupDi
 import HeroActionButtons from '../../components/HeroActionButtons';
 
 
-export const revalidate = 3600; // refresh from Supabase at most once per hour
+export const revalidate = 60; // refresh from Supabase at most once per minute
 
 
 export default async function ArsenalPage() {
