@@ -62,7 +62,7 @@ export default async function ManCityPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Cityzens worldwide — 400+ official supporter clubs across 65+ countries. Always Sky Blue.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+             <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="manchester-city" clubName="Manchester City" />
         </div>
       </section>
 

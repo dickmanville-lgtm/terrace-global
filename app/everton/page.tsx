@@ -63,7 +63,7 @@ export default async function EvertonPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Evertonians worldwide — the People's Club, now at the Hill Dickinson Stadium. Nothing but Blue Skies.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+             <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="everton" clubName="Everton" />
         </div>
       </section>
 

@@ -63,7 +63,7 @@ export default async function AstonVillaPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Villans worldwide — official Lions Clubs and supporter communities across the globe. Up the Villa.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+           <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="aston-villa" clubName="Aston Villa" />
         </div>
       </section>
 

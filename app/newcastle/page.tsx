@@ -66,7 +66,7 @@ export default async function NewcastlePage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Geordies worldwide — from Newcastle to New York, Blyth to Beijing, Wallsend to Wellington. Howay the Lads.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR_LIGHT} />
+              <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="newcastle" clubName="Newcastle United" />
         </div>
       </section>
 

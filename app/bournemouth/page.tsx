@@ -63,7 +63,7 @@ export default async function BournemouthPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Cherries worldwide — supporter communities from Bournemouth to beyond. Come On You Reds.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+             <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="bournemouth" clubName="AFC Bournemouth" />
         </div>
       </section>
 

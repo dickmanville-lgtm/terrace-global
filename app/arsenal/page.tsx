@@ -79,7 +79,7 @@ export default async function ArsenalPage() {
             Find Gooners worldwide â€” supporter clubs, fan communities and bars showing Arsenal matches wherever you are.
           </p>
 
-          <HeroActionButtons clubColor={CLUB_COLOR} />
+        <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="arsenal" clubName="Arsenal" />
         </div>
       </section>
 

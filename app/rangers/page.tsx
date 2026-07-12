@@ -63,7 +63,7 @@ export default async function RangersPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Gers worldwide — 600+ official supporter clubs across the globe. No Surrender.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+                <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="rangers" clubName="Rangers" />
         </div>
       </section>
 

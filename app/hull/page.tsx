@@ -63,7 +63,7 @@ export default async function HullPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Tigers worldwide — supporter communities from the MKM Stadium to Scandinavia and beyond. City Till We Die.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+            <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="hull" clubName="Hull City" />
         </div>
       </section>
 

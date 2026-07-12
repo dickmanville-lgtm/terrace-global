@@ -63,7 +63,7 @@ export default async function SpursPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Lilywhites worldwide — 680+ official supporter clubs across 60+ countries. To dare is to do.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+             <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="spurs" clubName="Tottenham Hotspur" />
         </div>
       </section>
 

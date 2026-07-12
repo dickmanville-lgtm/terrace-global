@@ -63,7 +63,7 @@ export default async function CoventryPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Sky Blues worldwide — supporter communities from Coventry to every corner of the globe. PUSB.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+               <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="coventry" clubName="Coventry City" />
         </div>
       </section>
 

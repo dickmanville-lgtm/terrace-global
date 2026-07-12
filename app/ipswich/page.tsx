@@ -63,7 +63,7 @@ export default async function IpswichPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Tractor Boys worldwide — from Portman Road to North America, Norway to Australia. Up the Town!
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+              <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="ipswich" clubName="Ipswich Town" />
         </div>
       </section>
 

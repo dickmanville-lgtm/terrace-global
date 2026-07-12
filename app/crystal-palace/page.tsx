@@ -63,7 +63,7 @@ export default async function CrystalPalacePage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Palace fans worldwide — from Selhurst to San Francisco, Sydney to Scandinavia. Park the Bus. CPFC.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+           <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="crystal-palace" clubName="Crystal Palace" />
         </div>
       </section>
 

@@ -63,7 +63,7 @@ export default async function CelticPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Bhoys worldwide — 800+ official supporter clubs across 60+ countries. You'll Never Walk Alone.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+             <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="celtic" clubName="Celtic" />
         </div>
       </section>
 

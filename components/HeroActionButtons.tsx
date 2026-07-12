@@ -1,8 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import AddGroupPill from './AddGroupPill'
 
-export default function HeroActionButtons({ clubColor }: { clubColor: string }) {
+export default function HeroActionButtons({
+  clubColor,
+  clubId,
+  clubSlug,
+  clubName,
+}: {
+  clubColor: string
+  clubId: number
+  clubSlug: string
+  clubName: string
+}) {
   const [active, setActive] = useState<'region' | 'map'>('region')
 
   const base: React.CSSProperties = {
@@ -33,6 +44,13 @@ export default function HeroActionButtons({ clubColor }: { clubColor: string }) 
       <a href="#map" onClick={() => setActive('map')} style={styleFor('map')}>
         View on map
       </a>
+      <AddGroupPill
+        clubId={clubId}
+        clubSlug={clubSlug}
+        clubName={clubName}
+        accentColor={clubColor}
+        variant="button"
+      />
     </div>
   )
 }

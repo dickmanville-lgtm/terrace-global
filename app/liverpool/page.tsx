@@ -61,7 +61,7 @@ export default async function LiverpoolPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find Reds worldwide — 300+ official supporter clubs across 100 countries. You'll Never Walk Alone.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+               <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="liverpool" clubName="Liverpool" />
         </div>
       </section>
 

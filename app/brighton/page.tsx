@@ -63,7 +63,7 @@ export default async function BrightonPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Albion fans worldwide — from the Amex to Asia, Houston to Hong Kong. Come On You Seagulls.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+                <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="brighton" clubName="Brighton & Hove Albion" />
         </div>
       </section>
 

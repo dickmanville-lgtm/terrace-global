@@ -63,7 +63,7 @@ export default async function LeedsPage() {
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '32px' }}>
             Find fellow Whites worldwide — supporters groups from Elland Road to every corner of the globe. Marching On Together.
           </p>
-                    <HeroActionButtons clubColor={CLUB_COLOR} />
+             <HeroActionButtons clubColor={CLUB_COLOR} clubId={club.id} clubSlug="leeds" clubName="Leeds United" />
         </div>
       </section>
 
