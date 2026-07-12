@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch/inspection dumps
+*-page.txt
+all-club-pages.txt
+fgd-full.txt
+helper-dump.txt
+helper-tail.txt
+mailto-hits.txt
+pill-dump.txt
+helper-dump
+pill-dump
