@@ -12,7 +12,6 @@ export async function submitFanGroup(fields: {
   city: string
   country: string
   url: string
-  x_url: string
   instagram_url: string
   facebook_url: string
   tiktok_url: string
@@ -30,7 +29,6 @@ export async function submitFanGroup(fields: {
       city: fields.city || null,
       country: fields.country || null,
       url: fields.url || null,
-      x_url: fields.x_url || null,
       instagram_url: fields.instagram_url || null,
       facebook_url: fields.facebook_url || null,
       tiktok_url: fields.tiktok_url || null,

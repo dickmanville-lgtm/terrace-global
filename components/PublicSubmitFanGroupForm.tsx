@@ -45,7 +45,6 @@ export default function PublicSubmitFanGroupForm({
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
   const [url, setUrl] = useState('')
-  const [xUrl, setXUrl] = useState('')
   const [instagramUrl, setInstagramUrl] = useState('')
   const [facebookUrl, setFacebookUrl] = useState('')
   const [tiktokUrl, setTiktokUrl] = useState('')
@@ -58,10 +57,10 @@ export default function PublicSubmitFanGroupForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    const hasAnyLink = url || xUrl || instagramUrl || facebookUrl || tiktokUrl
+    const hasAnyLink = url || instagramUrl || facebookUrl || tiktokUrl
     if (!name.trim() || !hasAnyLink) {
       setStatus('error')
-      setMessage('Please add a group name and at least one link (website, X, Instagram, Facebook, or TikTok).')
+      setMessage('Please add a group name and at least one link (main link, Instagram, Facebook, or TikTok).')
       return
     }
 
@@ -74,7 +73,6 @@ export default function PublicSubmitFanGroupForm({
       city: city.trim(),
       country: country.trim(),
       url: normalizeUrl(url),
-      x_url: normalizeUrl(xUrl),
       instagram_url: normalizeUrl(instagramUrl),
       facebook_url: normalizeUrl(facebookUrl),
       tiktok_url: normalizeUrl(tiktokUrl),
@@ -86,7 +84,7 @@ export default function PublicSubmitFanGroupForm({
       setStatus('success')
       setMessage(`Thanks! We'll review "${name}" and add it to ${clubName} soon.`)
       setName(''); setType('supporter_club'); setCity(''); setCountry('')
-      setUrl(''); setXUrl(''); setInstagramUrl(''); setFacebookUrl(''); setTiktokUrl('')
+      setUrl(''); setInstagramUrl(''); setFacebookUrl(''); setTiktokUrl('')
       setDescription(''); setSubmitterEmail('')
       onSubmitted?.()
     } else {
@@ -129,15 +127,12 @@ export default function PublicSubmitFanGroupForm({
         </div>
       </div>
 
-      <label style={labelStyle}>Website</label>
-      <input value={url} onChange={e => setUrl(e.target.value)} style={inputStyle} placeholder="yourclub.com" />
+      <label style={labelStyle}>Main link</label>
+      <input value={url} onChange={e => setUrl(e.target.value)} style={inputStyle} placeholder="yourclub.com or x.com/yourgroup" />
 
       <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginTop: '-4px', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-        Social links (add at least one if you don&apos;t have a website)
+        Other socials (optional)
       </p>
-
-      <label style={labelStyle}>X (Twitter)</label>
-      <input value={xUrl} onChange={e => setXUrl(e.target.value)} style={inputStyle} placeholder="x.com/yourgroup" />
 
       <label style={labelStyle}>Instagram</label>
       <input value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} style={inputStyle} placeholder="instagram.com/yourgroup" />
