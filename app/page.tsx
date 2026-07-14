@@ -1,43 +1,57 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import SiteNav from '../components/SiteNav';
+import { supabase } from '@/lib/supabase';
 
-const DOORS = [
-  {
-    key: 'supporter-groups',
-    label: 'Supporter Groups',
-    dot: '#EF4444',
-    pillBg: 'rgba(239,68,68,0.15)',
-    pillBorder: 'rgba(239,68,68,0.35)',
-    headline: 'Fan groups, worldwide.',
-    body: '239 supporter groups across 22 clubs. Find your people, wherever you are.',
-    cta: 'Find your people',
-    href: '/supporter-groups',
-  },
-  {
-    key: 'clubs-stadiums',
-    label: 'Clubs / Stadiums',
-    dot: '#FFFFFF',
-    pillBg: 'rgba(255,255,255,0.1)',
-    pillBorder: 'rgba(255,255,255,0.3)',
-    headline: 'Every ground, mapped.',
-    body: '65+ grounds across Europe\u2019s top leagues. Click a pin to visit the club.',
-    cta: 'Open the map',
-    href: '/club-map',
-  },
-  {
-    key: 'sports-bars',
-    label: 'Sports Bars',
-    dot: '#F97316',
-    pillBg: 'rgba(249,115,22,0.12)',
-    pillBorder: 'rgba(249,115,22,0.3)',
-    headline: 'Sports bars, mapped.',
-    body: 'Bars showing the match, wherever you\u2019re travelling. Coming soon.',
-    cta: 'Coming soon',
-    href: null,
-  },
-];
+export const revalidate = 60; // refresh live counts from Supabase at most once per minute
 
-export default function Home() {
+export default async function Home() {
+  // Live count so the supporter-groups card never goes stale as groups grow.
+  const { count: groupsCount } = await supabase
+    .from('fan_groups')
+    .select('*', { count: 'exact', head: true });
+
+  // If the count query fails, fall back to a number-free sentence rather than showing "0".
+  const groupsBody =
+    groupsCount != null
+      ? `${groupsCount} supporter groups and growing. Find your people, wherever you are.`
+      : 'Supporter groups and growing. Find your people, wherever you are.';
+
+  const DOORS = [
+    {
+      key: 'supporter-groups',
+      label: 'Supporter Groups',
+      dot: '#EF4444',
+      pillBg: 'rgba(239,68,68,0.15)',
+      pillBorder: 'rgba(239,68,68,0.35)',
+      headline: 'Fan groups, worldwide.',
+      body: groupsBody,
+      cta: 'Find your people',
+      href: '/supporter-groups',
+    },
+    {
+      key: 'clubs-stadiums',
+      label: 'Clubs / Stadiums',
+      dot: '#FFFFFF',
+      pillBg: 'rgba(255,255,255,0.1)',
+      pillBorder: 'rgba(255,255,255,0.3)',
+      headline: 'Every ground, mapped.',
+      body: '65+ grounds across Europe\u2019s top leagues. Click a pin to visit the club.',
+      cta: 'Open the map',
+      href: '/club-map',
+    },
+    {
+      key: 'sports-bars',
+      label: 'Sports Bars',
+      dot: '#F97316',
+      pillBg: 'rgba(249,115,22,0.12)',
+      pillBorder: 'rgba(249,115,22,0.3)',
+      headline: 'Sports bars, mapped.',
+      body: 'Bars showing the match, wherever you\u2019re travelling. Coming soon.',
+      cta: 'Coming soon',
+      href: null,
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-black text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
 

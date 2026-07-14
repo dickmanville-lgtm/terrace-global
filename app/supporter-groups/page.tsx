@@ -1,32 +1,34 @@
 import Link from 'next/link';
 import SiteNav from '../../components/SiteNav';
+import { supabase } from '@/lib/supabase';
 
-const CLUBS = [
-  { name: 'Arsenal', url: '/arsenal' },
-  { name: 'Aston Villa', url: '/aston-villa' },
-  { name: 'Bournemouth', url: '/bournemouth' },
-  { name: 'Brentford', url: '/brentford' },
-  { name: 'Brighton', url: '/brighton' },
-  { name: 'Celtic', url: '/celtic' },
-  { name: 'Chelsea', url: '/chelsea' },
-  { name: 'Coventry City', url: '/coventry' },
-  { name: 'Crystal Palace', url: '/crystal-palace' },
-  { name: 'Everton', url: '/everton' },
-  { name: 'Fulham', url: '/fulham' },
-  { name: 'Hull City', url: '/hull' },
-  { name: 'Ipswich Town', url: '/ipswich' },
-  { name: 'Leeds United', url: '/leeds' },
-  { name: 'Liverpool', url: '/liverpool' },
-  { name: 'Man United', url: '/manchester-united' },
-  { name: 'Manchester City', url: '/manchester-city' },
-  { name: 'Newcastle', url: '/newcastle' },
-  { name: 'Nottingham Forest', url: '/nottingham-forest' },
-  { name: 'Rangers', url: '/rangers' },
-  { name: 'Spurs', url: '/spurs' },
-  { name: 'Sunderland', url: '/sunderland' },
-];
+export const revalidate = 60; // refresh from Supabase at most once per minute
 
-export default function CommunitiesPage() {
+type ClubLink = { slug: string; name: string };
+
+export default async function CommunitiesPage() {
+  // Club pills come straight from the clubs table (alphabetical by name), so a new
+  // club appears here automatically the moment its row is added \u2014 no code edit.
+  const { data: clubsData } = await supabase
+    .from('clubs')
+    .select('slug, name')
+    .order('name');
+
+  // Live total for the footer strip so it never goes stale.
+  const { count: groupsCount } = await supabase
+    .from('fan_groups')
+    .select('*', { count: 'exact', head: true });
+
+  const clubs: ClubLink[] = (clubsData || []).filter(
+    (c): c is ClubLink => Boolean(c.slug && c.name)
+  );
+  const clubsCount = clubs.length;
+
+  const footerStat =
+    groupsCount != null
+      ? `${clubsCount} clubs, ${groupsCount} fan groups`
+      : `${clubsCount} clubs`;
+
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
 
@@ -52,8 +54,8 @@ export default function CommunitiesPage() {
           Select your club
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
-          {CLUBS.map(club => (
-            <Link key={club.name} href={club.url} style={{
+          {clubs.map(club => (
+            <Link key={club.slug} href={`/${club.slug}`} style={{
               padding: '8px 18px', borderRadius: '999px',
               border: '1px solid rgba(255,255,255,0.12)',
               background: 'transparent',
@@ -77,7 +79,7 @@ export default function CommunitiesPage() {
           &larr; Back to Terrace.
         </Link>
         <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>
-          Terrace. &middot; Supporter Groups &middot; 22 clubs, 239 fan groups
+          Terrace. &middot; Supporter Groups &middot; {footerStat}
         </span>
       </footer>
 
