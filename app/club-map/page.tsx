@@ -45,7 +45,7 @@ export default function ClubMapPage() {
         <GroundsMap />
       </section>
 
-      <Footer stat="Club Map · Premier League 2026/27" />
+      <Footer stat="Club Map" />
 
     </main>
   );
