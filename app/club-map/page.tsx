@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import SiteNav from '../../components/SiteNav';
+import Footer from '../../components/Footer';
 
 const GroundsMap = dynamic(() => import('../../components/GroundsMap'), {
   ssr: false,
@@ -45,11 +45,7 @@ export default function ClubMapPage() {
         <GroundsMap />
       </section>
 
-      {/* Footer */}
-      <footer style={{ padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>← Back to Terrace.</Link>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>Terrace. · Club Map · Premier League 2026/27</span>
-      </footer>
+      <Footer stat="Club Map · Premier League 2026/27" />
 
     </main>
   );

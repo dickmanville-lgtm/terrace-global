@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import SiteNav from '../../components/SiteNav';
+import Footer from '../../components/Footer';
 import { supabase } from '@/lib/supabase';
 
 export const revalidate = 60; // refresh from Supabase at most once per minute
@@ -70,18 +71,7 @@ export default async function CommunitiesPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{
-        padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
-      }}>
-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>
-          &larr; Back to Terrace.
-        </Link>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>
-          Terrace. &middot; Supporter Groups &middot; {footerStat}
-        </span>
-      </footer>
+      <Footer stat={`Supporter Groups · ${footerStat}`} />
 
     </main>
   );

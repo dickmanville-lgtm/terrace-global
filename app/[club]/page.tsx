@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { readableAccent } from '@/lib/color';
@@ -7,6 +6,7 @@ import SiteNav from '@/components/SiteNav';
 import FanGroupDirectory, { type FanGroupRow } from '@/components/FanGroupDirectory';
 import HeroActionButtons from '@/components/HeroActionButtons';
 import AddGroupPill from '@/components/AddGroupPill';
+import Footer from '@/components/Footer';
 
 export const revalidate = 60; // refresh from Supabase at most once per minute
 
@@ -145,13 +145,7 @@ export default async function ClubPage({
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>← Back to Terrace.</Link>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>
-          Terrace. · {name}{club.footer_tagline ? ` · ${club.footer_tagline}` : ''}
-        </span>
-      </footer>
+      <Footer stat={`${name}${club.footer_tagline ? ` · ${club.footer_tagline}` : ''}`} />
 
     </main>
   );

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import SiteNav from '../components/SiteNav';
+import Footer from '../components/Footer';
 import { supabase } from '@/lib/supabase';
 
 export const revalidate = 60; // refresh live counts from Supabase at most once per minute
@@ -141,20 +142,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <footer style={{
-        padding: '32px', borderTop: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
-          <span style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            The Terrace
-          </span>
-        </div>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)' }}>
-          The global home for football fans
-        </span>
-      </footer>
+      <Footer showBackLink={false} stat="The global home for football fans" />
 
     </main>
   );
