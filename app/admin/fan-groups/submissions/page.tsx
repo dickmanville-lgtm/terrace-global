@@ -1,4 +1,4 @@
-import { supabase } from '../../../../lib/supabase'
+import { supabaseAdmin } from '../../../../lib/supabase-admin'
 import Link from 'next/link'
 import SubmissionsReview from './SubmissionsReview'
 
@@ -35,12 +35,12 @@ export default async function SubmissionsPage({
   const params = await searchParams
   const status = params.status || 'pending'
 
-  const { data: clubs } = await supabase
+  const { data: clubs } = await supabaseAdmin
     .from('clubs')
     .select('id, name, slug')
     .order('name')
 
-  const { data: submissionsData } = await supabase
+  const { data: submissionsData } = await supabaseAdmin
     .from('fan_group_submissions')
     .select(
       'id, created_at, status, club_id, club_slug, name, type, city, country, url, instagram_url, facebook_url, tiktok_url, description, submitter_email, region, latitude, longitude, reviewed_at, review_note'
