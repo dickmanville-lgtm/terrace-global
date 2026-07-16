@@ -10,6 +10,7 @@ async function logout() {
 }
 
 const tools = [
+  { href: '/admin/fan-groups/submissions', label: 'Review submissions', desc: 'Approve or reject public "Add my group" submissions' },
   { href: '/admin/fan-groups', label: 'Browse & edit fan groups', desc: 'View, edit, and delete existing entries' },
   { href: '/admin/fan-groups/new', label: 'Add fan group', desc: 'Add a single group manually' },
   { href: '/admin/fan-groups/bulk', label: 'Bulk upload fan groups', desc: 'Paste a CSV of many groups at once' },
