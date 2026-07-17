@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { submitFanGroup } from './submit-actions'
+import { normalizeSocialUrl } from '../lib/social-links'
 
 const TYPES: { value: string; label: string }[] = [
   { value: 'supporter_club', label: 'Supporter club' },
@@ -73,9 +74,9 @@ export default function PublicSubmitFanGroupForm({
       city: city.trim(),
       country: country.trim(),
       url: normalizeUrl(url),
-      instagram_url: normalizeUrl(instagramUrl),
-      facebook_url: normalizeUrl(facebookUrl),
-      tiktok_url: normalizeUrl(tiktokUrl),
+      instagram_url: normalizeSocialUrl('instagram', instagramUrl),
+      facebook_url: normalizeSocialUrl('facebook', facebookUrl),
+      tiktok_url: normalizeSocialUrl('tiktok', tiktokUrl),
       description: description.trim(),
       submitter_email: submitterEmail.trim(),
     })
@@ -135,13 +136,13 @@ export default function PublicSubmitFanGroupForm({
       </p>
 
       <label style={labelStyle}>Instagram</label>
-      <input value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} style={inputStyle} placeholder="instagram.com/yourgroup" />
+      <input value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} style={inputStyle} placeholder="@yourgroup or instagram.com/yourgroup" />
 
       <label style={labelStyle}>Facebook</label>
-      <input value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} style={inputStyle} placeholder="facebook.com/yourgroup" />
+      <input value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} style={inputStyle} placeholder="@yourgroup or facebook.com/yourgroup" />
 
       <label style={labelStyle}>TikTok</label>
-      <input value={tiktokUrl} onChange={e => setTiktokUrl(e.target.value)} style={inputStyle} placeholder="tiktok.com/@yourgroup" />
+      <input value={tiktokUrl} onChange={e => setTiktokUrl(e.target.value)} style={inputStyle} placeholder="@yourgroup or tiktok.com/@yourgroup" />
 
       <label style={labelStyle}>Tell us about your group (optional)</label>
       <textarea value={description} onChange={e => setDescription(e.target.value)} style={{ ...inputStyle, minHeight: '70px', resize: 'vertical' }} />

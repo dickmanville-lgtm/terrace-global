@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { approveSubmission, rejectSubmission } from './actions'
 import type { Submission } from './page'
+import { regionForCountry } from '../../../../lib/region'
 
 type Club = { id: number; name: string; slug: string }
 
@@ -34,7 +35,8 @@ function SubmissionCard({ submission, clubs }: { submission: Submission; clubs: 
   const [type, setType] = useState(submission.type || 'supporter_club')
   const [city, setCity] = useState(submission.city || '')
   const [country, setCountry] = useState(submission.country || '')
-  const [region, setRegion] = useState(submission.region || '')
+  const [region, setRegion] = useState(submission.region || regionForCountry(submission.country || ''))
+  const [regionTouched, setRegionTouched] = useState(!!submission.region)
   const [url, setUrl] = useState(submission.url || '')
   const [description, setDescription] = useState(submission.description || '')
 
@@ -192,17 +194,37 @@ function SubmissionCard({ submission, clubs }: { submission: Submission; clubs: 
         </div>
         <div style={{ flex: 1 }}>
           <label style={labelStyle}>Country</label>
-          <input value={country} onChange={(e) => setCountry(e.target.value)} style={inputStyle} />
+          <input
+            value={country}
+            onChange={(e) => {
+              const next = e.target.value
+              setCountry(next)
+              if (!regionTouched) setRegion(regionForCountry(next))
+            }}
+            style={inputStyle}
+          />
         </div>
       </div>
 
       <label style={labelStyle}>Region</label>
-      <select value={region} onChange={(e) => setRegion(e.target.value)} style={inputStyle}>
+      <select
+        value={region}
+        onChange={(e) => {
+          setRegion(e.target.value)
+          setRegionTouched(true)
+        }}
+        style={inputStyle}
+      >
         <option value="">Select a region</option>
         {REGIONS.map((r) => (
           <option key={r} value={r}>{r}</option>
         ))}
       </select>
+      {!regionTouched && region && (
+        <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', marginTop: '-8px', marginBottom: '12px' }}>
+          Auto-suggested from country — change it if that&apos;s wrong.
+        </p>
+      )}
 
       <label style={labelStyle}>Find location (address, venue, or city)</label>
       <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
