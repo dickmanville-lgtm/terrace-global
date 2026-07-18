@@ -11,7 +11,7 @@ type ClubInfo = {
 const LINKS: { key: Section; label: string; href: string | null }[] = [
   { key: 'supporter-groups', label: 'Supporter Groups', href: '/supporter-groups' },
   { key: 'club-map', label: 'Clubs / Stadiums', href: '/club-map' },
-  { key: 'sports-bars', label: 'Sports Bars', href: null },
+  { key: 'sports-bars', label: 'Sports Bars', href: '/sports-bars' },
 ];
 
 export default function SiteNav({ active, club }: { active?: Section; club?: ClubInfo }) {

@@ -17,6 +17,16 @@ export default async function Home() {
       ? `${groupsCount} supporter groups and growing. Find your people, wherever you are.`
       : 'Supporter groups and growing. Find your people, wherever you are.';
 
+  // Live count for the sports-bars card, same pattern as supporter groups.
+  const { count: barsCount } = await supabase
+    .from('sports_bars')
+    .select('*', { count: 'exact', head: true });
+
+  const barsBody =
+    barsCount != null
+      ? `${barsCount} bars mapped and growing. Find one wherever you're travelling.`
+      : 'Bars showing the match, wherever you\u2019re travelling.';
+
   const DOORS = [
     {
       key: 'supporter-groups',
@@ -47,9 +57,9 @@ export default async function Home() {
       pillBg: 'rgba(249,115,22,0.12)',
       pillBorder: 'rgba(249,115,22,0.3)',
       headline: 'Sports bars, mapped.',
-      body: 'Bars showing the match, wherever you\u2019re travelling. Coming soon.',
-      cta: 'Coming soon',
-      href: null,
+      body: barsBody,
+      cta: 'Find a bar',
+      href: '/sports-bars',
     },
   ];
 
