@@ -12,7 +12,8 @@ export default async function SportsBarsPage() {
   const { data: barsData } = await supabase
     .from('sports_bars')
     .select('id, name, location, country, url, latitude, longitude')
-    .neq('link_status', 'pending_removal');
+    .neq('link_status', 'pending_removal')
+    .not('url', 'is', null);
 
   // Supabase returns `numeric` columns as strings (to avoid float precision loss),
   // so lat/long need converting back to numbers here before Mapbox can plot them.

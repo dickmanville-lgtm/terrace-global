@@ -42,6 +42,7 @@ function validateRow(r: Record<string, string>): string[] {
   if (!r.name || !r.name.trim()) issues.push('Missing name')
   if (!r.location || !r.location.trim()) issues.push('Missing location')
   if (!r.country || !r.country.trim()) issues.push('Missing country')
+  if (!r.url || !r.url.trim()) issues.push('Missing url')
   if (!r.latitude || isNaN(parseFloat(r.latitude))) issues.push('Missing or invalid latitude')
   if (!r.longitude || isNaN(parseFloat(r.longitude))) issues.push('Missing or invalid longitude')
   return issues

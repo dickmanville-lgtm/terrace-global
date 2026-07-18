@@ -17,7 +17,7 @@ export async function bulkCreateSportsBars(rows: BulkRow[]) {
     name: string
     location: string
     country: string
-    url: string | null
+    url: string
     latitude: number
     longitude: number
   }[] = []
@@ -36,6 +36,10 @@ export async function bulkCreateSportsBars(rows: BulkRow[]) {
       skipped.push({ row: i + 1, reason: 'Missing country' })
       return
     }
+    if (!r.url || !r.url.trim()) {
+      skipped.push({ row: i + 1, reason: 'Missing url — a bar with no link is not useful on the map' })
+      return
+    }
 
     const lat = parseFloat(r.latitude)
     const lng = parseFloat(r.longitude)
@@ -48,7 +52,7 @@ export async function bulkCreateSportsBars(rows: BulkRow[]) {
       name: r.name.trim(),
       location: r.location.trim(),
       country: r.country.trim(),
-      url: r.url ? r.url.trim() : null,
+      url: r.url.trim(),
       latitude: lat,
       longitude: lng,
     })
