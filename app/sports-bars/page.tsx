@@ -2,6 +2,7 @@ import SiteNav from '../../components/SiteNav';
 import Footer from '../../components/Footer';
 import { supabase } from '@/lib/supabase';
 import SportsBarsMapLoader from './SportsBarsMapLoader';
+import type { SportsBar } from '../../components/SportsBarsMap';
 
 export const revalidate = 60; // refresh from Supabase at most once per minute
 
@@ -13,7 +14,19 @@ export default async function SportsBarsPage() {
     .select('id, name, location, country, url, latitude, longitude')
     .neq('link_status', 'pending_removal');
 
-  const bars = barsData || [];
+  // Supabase returns `numeric` columns as strings (to avoid float precision loss),
+  // so lat/long need converting back to numbers here before Mapbox can plot them.
+  const bars: SportsBar[] = (barsData || [])
+    .map((b) => ({
+      id: b.id,
+      name: b.name,
+      location: b.location,
+      country: b.country,
+      url: b.url,
+      latitude: Number(b.latitude),
+      longitude: Number(b.longitude),
+    }))
+    .filter((b) => !isNaN(b.latitude) && !isNaN(b.longitude));
 
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
