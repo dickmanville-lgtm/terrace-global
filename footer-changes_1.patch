@@ -1,0 +1,123 @@
+diff --git a/app/[club]/page.tsx b/app/[club]/page.tsx
+index 4671f98..2a65c1d 100644
+--- a/app/[club]/page.tsx
++++ b/app/[club]/page.tsx
+@@ -1,4 +1,3 @@
+-import Link from 'next/link';
+ import { notFound } from 'next/navigation';
+ import { supabase } from '@/lib/supabase';
+ import { readableAccent } from '@/lib/color';
+@@ -7,6 +6,7 @@ import SiteNav from '@/components/SiteNav';
+ import FanGroupDirectory, { type FanGroupRow } from '@/components/FanGroupDirectory';
+ import HeroActionButtons from '@/components/HeroActionButtons';
+ import AddGroupPill from '@/components/AddGroupPill';
++import Footer from '@/components/Footer';
+ 
+ export const revalidate = 60; // refresh from Supabase at most once per minute
+ 
+@@ -145,13 +145,7 @@ export default async function ClubPage({
+         </div>
+       </section>
+ 
+-      {/* Footer */}
+-      <footer style={{ padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>← Back to Terrace.</Link>
+-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>
+-          Terrace. · {name}{club.footer_tagline ? ` · ${club.footer_tagline}` : ''}
+-        </span>
+-      </footer>
++      <Footer stat={`${name}${club.footer_tagline ? ` · ${club.footer_tagline}` : ''}`} />
+ 
+     </main>
+   );
+diff --git a/app/club-map/page.tsx b/app/club-map/page.tsx
+index 0da0ebb..caa15f8 100644
+--- a/app/club-map/page.tsx
++++ b/app/club-map/page.tsx
+@@ -1,8 +1,8 @@
+ 'use client';
+ 
+-import Link from 'next/link';
+ import dynamic from 'next/dynamic';
+ import SiteNav from '../../components/SiteNav';
++import Footer from '../../components/Footer';
+ 
+ const GroundsMap = dynamic(() => import('../../components/GroundsMap'), {
+   ssr: false,
+@@ -45,11 +45,7 @@ export default function ClubMapPage() {
+         <GroundsMap />
+       </section>
+ 
+-      {/* Footer */}
+-      <footer style={{ padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>← Back to Terrace.</Link>
+-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>Terrace. · Club Map · Premier League 2026/27</span>
+-      </footer>
++      <Footer stat="Club Map · Premier League 2026/27" />
+ 
+     </main>
+   );
+diff --git a/app/page.tsx b/app/page.tsx
+index 728a98d..69df07d 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -1,5 +1,6 @@
+ import Link from 'next/link';
+ import SiteNav from '../components/SiteNav';
++import Footer from '../components/Footer';
+ import { supabase } from '@/lib/supabase';
+ 
+ export const revalidate = 60; // refresh live counts from Supabase at most once per minute
+@@ -141,20 +142,7 @@ export default async function Home() {
+         </div>
+       </section>
+ 
+-      <footer style={{
+-        padding: '32px', borderTop: '1px solid rgba(255,255,255,0.06)',
+-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
+-      }}>
+-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
+-          <span style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+-            The Terrace
+-          </span>
+-        </div>
+-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)' }}>
+-          The global home for football fans
+-        </span>
+-      </footer>
++      <Footer showBackLink={false} stat="The global home for football fans" />
+ 
+     </main>
+   );
+diff --git a/app/supporter-groups/page.tsx b/app/supporter-groups/page.tsx
+index 7b3dea1..d5b4ef0 100644
+--- a/app/supporter-groups/page.tsx
++++ b/app/supporter-groups/page.tsx
+@@ -1,5 +1,6 @@
+ import Link from 'next/link';
+ import SiteNav from '../../components/SiteNav';
++import Footer from '../../components/Footer';
+ import { supabase } from '@/lib/supabase';
+ 
+ export const revalidate = 60; // refresh from Supabase at most once per minute
+@@ -70,18 +71,7 @@ export default async function CommunitiesPage() {
+         </div>
+       </section>
+ 
+-      {/* Footer */}
+-      <footer style={{
+-        padding: '24px 32px', borderTop: '1px solid rgba(255,255,255,0.06)',
+-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
+-      }}>
+-        <Link href="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>
+-          &larr; Back to Terrace.
+-        </Link>
+-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.15)' }}>
+-          Terrace. &middot; Supporter Groups &middot; {footerStat}
+-        </span>
+-      </footer>
++      <Footer stat={`Supporter Groups · ${footerStat}`} />
+ 
+     </main>
+   );
