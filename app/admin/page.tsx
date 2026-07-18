@@ -15,6 +15,7 @@ const tools = [
   { href: '/admin/fan-groups/new', label: 'Add fan group', desc: 'Add a single group manually' },
   { href: '/admin/fan-groups/bulk', label: 'Bulk upload fan groups', desc: 'Paste a CSV of many groups at once' },
   { href: '/admin/sports-bars/bulk', label: 'Bulk upload sports bars', desc: 'Paste a CSV of many sports bars at once' },
+  { href: '/admin/sports-bars/submissions', label: 'Review sports bar submissions', desc: 'Approve or reject public "Add your bar" submissions' },
 ]
 
 export default function AdminHome() {

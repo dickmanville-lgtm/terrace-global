@@ -2,6 +2,7 @@ import SiteNav from '../../components/SiteNav';
 import Footer from '../../components/Footer';
 import { supabase } from '@/lib/supabase';
 import SportsBarsMapLoader from './SportsBarsMapLoader';
+import AddBarPill from '../../components/AddBarPill';
 import type { SportsBar } from '../../components/SportsBarsMap';
 
 export const revalidate = 60; // refresh from Supabase at most once per minute
@@ -44,9 +45,10 @@ export default async function SportsBarsPage() {
           <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: '12px' }}>
             Find a bar showing<br /><span style={{ color: 'rgba(255,255,255,0.4)' }}>the match, wherever you are.</span>
           </h1>
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px' }}>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '16px' }}>
             {bars.length} bars mapped worldwide. Zoom in on your holiday resort, city break, or away day — click a pin for the link.
           </p>
+          <AddBarPill variant="link" />
         </div>
       </section>
 
