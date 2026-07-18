@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { submitSportsBar } from './submit-bar-actions'
 import BarLocationPicker from './BarLocationPicker'
+import { normalizeBarLink } from '../lib/social-links'
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 12px', borderRadius: '8px', boxSizing: 'border-box',
@@ -11,14 +12,6 @@ const inputStyle: React.CSSProperties = {
 }
 const labelStyle: React.CSSProperties = {
   display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px',
-}
-
-// Trim whitespace and prepend https:// if the submitter forgot the scheme.
-function normalizeUrl(raw: string): string {
-  const v = raw.trim()
-  if (!v) return ''
-  if (/^https?:\/\//i.test(v)) return v
-  return `https://${v}`
 }
 
 export default function PublicSubmitSportsBarForm({
@@ -59,7 +52,7 @@ export default function PublicSubmitSportsBarForm({
       name: name.trim(),
       location: location.trim(),
       country: country.trim(),
-      url: normalizeUrl(url),
+      url: normalizeBarLink(url),
       submitter_email: submitterEmail.trim(),
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
@@ -113,7 +106,7 @@ export default function PublicSubmitSportsBarForm({
       />
 
       <label style={labelStyle}>Link (website, Facebook, or Instagram)</label>
-      <input value={url} onChange={e => setUrl(e.target.value)} style={inputStyle} placeholder="theirsite.com or facebook.com/theirbar" />
+      <input value={url} onChange={e => setUrl(e.target.value)} style={inputStyle} placeholder="theirsite.com, facebook.com/theirbar, or @theirbar" />
 
       <label style={labelStyle}>Your email (optional — only used if we need to check something)</label>
       <input type="email" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} style={inputStyle} placeholder="you@example.com" />

@@ -41,3 +41,27 @@ export function normalizeSocialUrl(platform: SocialPlatform, raw: string): strin
 
   return buildFromHandle(platform, handle)
 }
+
+// For single-field cases (e.g. the sports bars "Link" field) where the person
+// might paste a real website, a Facebook/Instagram/TikTok URL, a bare domain,
+// or just an "@handle" with no platform stated at all. Detects the platform
+// from the input itself rather than requiring the caller to already know it.
+export function normalizeBarLink(raw: string): string {
+  const v = raw.trim()
+  if (!v) return ''
+
+  // Already a full URL with a scheme — leave it alone, whatever platform it is.
+  if (/^https?:\/\//i.test(v)) return v
+
+  // Bare domain matching a known social platform (e.g. "facebook.com/yourbar") — add the scheme.
+  for (const platform of Object.keys(PLATFORM_DOMAINS) as SocialPlatform[]) {
+    if (PLATFORM_DOMAINS[platform].test(v)) return `https://${v}`
+  }
+
+  // A bare "@handle" carries no platform info by itself — Instagram is the most
+  // common convention for venues posting just a handle, so default to that.
+  if (v.startsWith('@')) return buildFromHandle('instagram', v.replace(/^@+/, ''))
+
+  // Otherwise assume it's a plain website domain (e.g. "thatbar.com") and add the scheme.
+  return `https://${v}`
+}
