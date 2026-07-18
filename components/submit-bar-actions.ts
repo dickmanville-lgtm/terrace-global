@@ -8,6 +8,8 @@ export async function submitSportsBar(fields: {
   country: string
   url: string
   submitter_email: string
+  latitude: number
+  longitude: number
 }) {
   const { error } = await supabaseAdmin
     .from('sports_bar_submissions')
@@ -18,8 +20,8 @@ export async function submitSportsBar(fields: {
       country: fields.country || null,
       url: fields.url || null,
       submitter_email: fields.submitter_email || null,
-      // latitude, longitude deliberately NOT set here — the admin geocodes
-      // the address at review time, same pattern as fan_group_submissions.
+      latitude: fields.latitude,
+      longitude: fields.longitude,
     })
 
   if (error) return { success: false, error: error.message }
