@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { submitSportsBar } from './submit-bar-actions'
+import BarLocationPicker from './BarLocationPicker'
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 12px', borderRadius: '8px', boxSizing: 'border-box',
@@ -33,38 +34,11 @@ export default function PublicSubmitSportsBarForm({
   const [url, setUrl] = useState('')
   const [submitterEmail, setSubmitterEmail] = useState('')
 
-  const [address, setAddress] = useState('')
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
-  const [geocodeStatus, setGeocodeStatus] = useState<'idle' | 'loading' | 'found' | 'notfound' | 'error'>('idle')
-  const [geocodeLabel, setGeocodeLabel] = useState('')
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
-
-  async function handleGeocode() {
-    const query = address.trim() || `${name} ${location} ${country}`.trim()
-    if (!query) return
-    setGeocodeStatus('loading')
-    try {
-      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-      const res = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${token}&limit=1`
-      )
-      const data = await res.json()
-      if (data.features && data.features.length > 0) {
-        const [lng, lat] = data.features[0].center
-        setLatitude(lat.toFixed(6))
-        setLongitude(lng.toFixed(6))
-        setGeocodeLabel(data.features[0].place_name)
-        setGeocodeStatus('found')
-      } else {
-        setGeocodeStatus('notfound')
-      }
-    } catch {
-      setGeocodeStatus('error')
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -76,7 +50,7 @@ export default function PublicSubmitSportsBarForm({
     }
     if (!latitude || !longitude) {
       setStatus('error')
-      setMessage('Please use "Find on map" to pin the exact spot — that\u2019s how people find it once it\u2019s live.')
+      setMessage('Please search, click, or drag the pin on the map to mark the exact spot.')
       return
     }
 
@@ -95,7 +69,7 @@ export default function PublicSubmitSportsBarForm({
       setStatus('success')
       setMessage(`Thanks! We'll check "${name}" and add it to the map soon.`)
       setName(''); setLocation(''); setCountry(''); setUrl(''); setSubmitterEmail('')
-      setAddress(''); setLatitude(''); setLongitude(''); setGeocodeStatus('idle')
+      setLatitude(''); setLongitude('')
       onSubmitted?.()
     } else {
       setStatus('error')
@@ -130,25 +104,13 @@ export default function PublicSubmitSportsBarForm({
         </div>
       </div>
 
-      <label style={labelStyle}>Pin the exact spot — search the bar name or address</label>
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-        <input
-          value={address}
-          onChange={e => setAddress(e.target.value)}
-          style={{ ...inputStyle, marginBottom: 0, flex: 1 }}
-          placeholder="Leave blank to search the bar name + location above"
-        />
-        <button type="button" onClick={handleGeocode} style={{
-          padding: '10px 16px', borderRadius: '8px', border: 'none',
-          background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap',
-        }}>
-          Find on map
-        </button>
-      </div>
-      {geocodeStatus === 'loading' && <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginBottom: '12px' }}>Looking up…</p>}
-      {geocodeStatus === 'found' && <p style={{ fontSize: '12px', color: '#4ADE80', marginBottom: '12px' }}>Found: {geocodeLabel}</p>}
-      {geocodeStatus === 'notfound' && <p style={{ fontSize: '12px', color: '#F97316', marginBottom: '12px' }}>No match — try adding a street name or nearby landmark.</p>}
-      {geocodeStatus === 'error' && <p style={{ fontSize: '12px', color: '#EF4444', marginBottom: '12px' }}>Lookup failed — check your connection and try again.</p>}
+      <label style={labelStyle}>Pin the exact spot</label>
+      <BarLocationPicker
+        searchHint={`${name} ${location} ${country}`.trim()}
+        latitude={latitude}
+        longitude={longitude}
+        onLocationChange={(lat, lng) => { setLatitude(lat); setLongitude(lng) }}
+      />
 
       <label style={labelStyle}>Link (website, Facebook, or Instagram)</label>
       <input value={url} onChange={e => setUrl(e.target.value)} style={inputStyle} placeholder="theirsite.com or facebook.com/theirbar" />
