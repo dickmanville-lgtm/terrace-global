@@ -41,7 +41,30 @@ export async function updateFanGroup(id: number, clubSlug: string, fields: {
   return { success: true }
 }
 
-export async function deleteFanGroup(id: number, clubSlug: string) {
+export async function deleteFanGroup(id: number, clubSlug: string, note?: string) {
+  // Fetch the full row first so we have a snapshot for the deleted-pins log.
+  const { data: existing, error: fetchError } = await supabaseAdmin
+    .from('fan_groups')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (fetchError || !existing) {
+    return { success: false, error: fetchError?.message || 'Fan group not found' }
+  }
+
+  const { error: logError } = await supabaseAdmin.from('deleted_pins_log').insert({
+    source_table: 'fan_groups',
+    record_id: String(id),
+    record_data: existing,
+    reason: 'manual_admin_removal',
+    note: note || null,
+  })
+
+  if (logError) {
+    return { success: false, error: `Could not log deletion — nothing was deleted. ${logError.message}` }
+  }
+
   const { error } = await supabaseAdmin.from('fan_groups').delete().eq('id', id)
 
   if (error) return { success: false, error: error.message }
