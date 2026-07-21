@@ -17,6 +17,7 @@ const tools = [
   { href: '/admin/sports-bars', label: 'Browse & edit sports bars', desc: 'View, edit, and delete existing bars' },
   { href: '/admin/sports-bars/bulk', label: 'Bulk upload sports bars', desc: 'Paste a CSV of many sports bars at once' },
   { href: '/admin/sports-bars/submissions', label: 'Review sports bar submissions', desc: 'Approve or reject public "Add your bar" submissions' },
+  { href: '/admin/deleted-pins', label: 'Deleted pins log', desc: 'Review fan groups and sports bars that have been removed' },
 ]
 
 export default function AdminHome() {
