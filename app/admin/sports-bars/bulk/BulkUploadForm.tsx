@@ -90,7 +90,11 @@ export default function BulkUploadForm() {
     const result = await bulkCreateSportsBars(validRows)
 
     if (result.success) {
-      let msg = `Added ${result.inserted} sports bar${result.inserted === 1 ? '' : 's'}.`
+      let msg = `Added ${result.inserted} new sports bar${result.inserted === 1 ? '' : 's'}.`
+      if (result.enriched.length > 0) {
+        msg += ` Enriched ${result.enriched.length} existing bar${result.enriched.length === 1 ? '' : 's'}: ` +
+          result.enriched.map(e => `${e.name} (${e.fields.join(', ')})`).join('; ') + '.'
+      }
       if (result.skipped.length > 0) {
         msg += ` Skipped ${result.skipped.length}: ${result.skipped.map(s => `row ${s.row} (${s.reason})`).join(', ')}`
       }

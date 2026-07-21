@@ -106,7 +106,11 @@ export default function BulkUploadForm() {
     const result = await bulkCreateFanGroups(validRows)
 
     if (result.success) {
-      let msg = `Added ${result.inserted} fan group${result.inserted === 1 ? '' : 's'}.`
+      let msg = `Added ${result.inserted} new fan group${result.inserted === 1 ? '' : 's'}.`
+      if (result.enriched.length > 0) {
+        msg += ` Enriched ${result.enriched.length} existing group${result.enriched.length === 1 ? '' : 's'}: ` +
+          result.enriched.map(e => `${e.name} (${e.fields.join(', ')})`).join('; ') + '.'
+      }
       if (result.skipped.length > 0) {
         msg += ` Skipped ${result.skipped.length}: ${result.skipped.map(s => `row ${s.row} (${s.reason})`).join(', ')}`
       }
