@@ -109,6 +109,10 @@ export async function bulkCreateFanGroups(rows: BulkRow[]) {
       skipped.push({ row: i + 1, reason: `Invalid region "${r.region}"` })
       return
     }
+    if (!r.url?.trim() && !r.instagram_url?.trim() && !r.facebook_url?.trim() && !r.tiktok_url?.trim()) {
+      skipped.push({ row: i + 1, reason: 'No link (url, Instagram, Facebook, or TikTok) provided' })
+      return
+    }
 
     const lat = r.latitude ? parseFloat(r.latitude) : null
     const lng = r.longitude ? parseFloat(r.longitude) : null

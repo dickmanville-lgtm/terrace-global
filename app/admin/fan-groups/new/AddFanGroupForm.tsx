@@ -79,6 +79,13 @@ export default function AddFanGroupForm({ clubs }: { clubs: Club[] }) {
       setSubmitMessage('Club, name, and region are required.')
       return
     }
+    // url defaults to the 'https://' prefix, so an untouched field shouldn't count as a link.
+    const hasUrl = url.trim().replace(/^https?:\/\/$/, '').length > 0
+    if (!hasUrl && !instagramUrl.trim() && !facebookUrl.trim() && !tiktokUrl.trim()) {
+      setSubmitStatus('error')
+      setSubmitMessage('Add at least one link (main link, Instagram, Facebook, or TikTok).')
+      return
+    }
 
     setSubmitStatus('submitting')
     const result = await createFanGroup({

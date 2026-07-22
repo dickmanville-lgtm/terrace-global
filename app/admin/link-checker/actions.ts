@@ -76,28 +76,38 @@ export async function runLinkCheckerSweep() {
         { name: 'tiktok_url', value: group.tiktok_url },
       ].filter(f => f.value && f.value.trim())
 
+      let anyAlive = false
+      let anyUnverifiable = false
+      let allCheckableDead = true
+
       if (fields.length === 0) {
-        continue
+        // No link fields at all — nothing to click through to, so treat it the
+        // same as "every link is dead" rather than silently skipping the row.
+        results.fanGroupsChecked++
+        await supabaseAdmin
+          .from('fan_groups')
+          .update({ link_status: 'dead', link_checked_at: new Date().toISOString() })
+          .eq('id', group.id)
+      } else {
+        const checks = await Promise.all(
+          fields.map(async f => ({ ...f, result: await checkLink(f.value as string) }))
+        )
+        results.fanGroupsChecked++
+
+        anyAlive = checks.some(c => c.result === 'alive')
+        anyUnverifiable = checks.some(c => c.result === 'unverifiable')
+        allCheckableDead = checks
+          .filter(c => c.result !== 'unverifiable')
+          .every(c => c.result === 'dead')
+
+        await supabaseAdmin
+          .from('fan_groups')
+          .update({
+            link_status: anyAlive ? 'alive' : anyUnverifiable ? 'unverified' : 'dead',
+            link_checked_at: new Date().toISOString(),
+          })
+          .eq('id', group.id)
       }
-
-      const checks = await Promise.all(
-        fields.map(async f => ({ ...f, result: await checkLink(f.value as string) }))
-      )
-      results.fanGroupsChecked++
-
-      const anyAlive = checks.some(c => c.result === 'alive')
-      const anyUnverifiable = checks.some(c => c.result === 'unverifiable')
-      const allCheckableDead = checks
-        .filter(c => c.result !== 'unverifiable')
-        .every(c => c.result === 'dead')
-
-      await supabaseAdmin
-        .from('fan_groups')
-        .update({
-          link_status: anyAlive ? 'alive' : anyUnverifiable ? 'unverified' : 'dead',
-          link_checked_at: new Date().toISOString(),
-        })
-        .eq('id', group.id)
 
       if (!anyAlive && allCheckableDead && !anyUnverifiable) {
         const { data: fullRow } = await supabaseAdmin

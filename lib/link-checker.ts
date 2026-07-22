@@ -93,26 +93,38 @@ export async function runLinkCheckerBatch(
 
       result.lastId = group.id
 
-      if (fields.length === 0) continue
+      let anyAlive = false
+      let anyUnverifiable = false
+      let allCheckableDead = true
 
-      const checks = await Promise.all(
-        fields.map(async f => ({ ...f, result: await checkLink(f.value as string) }))
-      )
-      result.checked++
+      if (fields.length === 0) {
+        // No link fields at all — nothing to click through to, so treat it the
+        // same as "every link is dead" rather than silently skipping the row.
+        result.checked++
+        await supabaseAdmin
+          .from('fan_groups')
+          .update({ link_status: 'dead', link_checked_at: new Date().toISOString() })
+          .eq('id', group.id)
+      } else {
+        const checks = await Promise.all(
+          fields.map(async f => ({ ...f, result: await checkLink(f.value as string) }))
+        )
+        result.checked++
 
-      const anyAlive = checks.some(c => c.result === 'alive')
-      const anyUnverifiable = checks.some(c => c.result === 'unverifiable')
-      const allCheckableDead = checks
-        .filter(c => c.result !== 'unverifiable')
-        .every(c => c.result === 'dead')
+        anyAlive = checks.some(c => c.result === 'alive')
+        anyUnverifiable = checks.some(c => c.result === 'unverifiable')
+        allCheckableDead = checks
+          .filter(c => c.result !== 'unverifiable')
+          .every(c => c.result === 'dead')
 
-      await supabaseAdmin
-        .from('fan_groups')
-        .update({
-          link_status: anyAlive ? 'alive' : anyUnverifiable ? 'unverified' : 'dead',
-          link_checked_at: new Date().toISOString(),
-        })
-        .eq('id', group.id)
+        await supabaseAdmin
+          .from('fan_groups')
+          .update({
+            link_status: anyAlive ? 'alive' : anyUnverifiable ? 'unverified' : 'dead',
+            link_checked_at: new Date().toISOString(),
+          })
+          .eq('id', group.id)
+      }
 
       if (!anyAlive && allCheckableDead && !anyUnverifiable) {
         const { data: fullRow } = await supabaseAdmin
@@ -151,7 +163,7 @@ export async function runLinkCheckerBatch(
   // sports_bars
   const { data, error } = await supabaseAdmin
     .from('sports_bars')
-    .select('id, name, url')
+    .select('id,name, url')
     .gt('id', afterId)
     .order('id', { ascending: true })
     .limit(batchSize + 1)
