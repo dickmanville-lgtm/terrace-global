@@ -16,7 +16,12 @@ export async function GET(request: NextRequest) {
 
   const summary: Record<string, unknown> = {}
 
-  for (const table of ['fan_groups', 'sports_bars'] as const) {
+  // Sports bars temporarily excluded from the automated sweep while Phase 1/2
+// bulk-seeding is in progress — re-add 'sports_bars' here once enrichment
+// is far enough along that dead-link checks are worth running again.
+const TABLES_TO_CHECK = ['fan_groups'] as const
+
+for (const table of TABLES_TO_CHECK) {
     const batchSize = table === 'fan_groups' ? FAN_GROUPS_BATCH_SIZE : SPORTS_BARS_BATCH_SIZE
 
     const { data: state } = await supabaseAdmin
