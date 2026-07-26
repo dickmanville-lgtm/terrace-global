@@ -27,6 +27,16 @@ export default async function Home() {
       ? `${barsCount} bars mapped and growing. Find one wherever you're travelling.`
       : 'Bars showing the match, wherever you\u2019re travelling.';
 
+  // Live count for the clubs/stadiums card, same pattern as the other two.
+  const { count: groundsCount } = await supabase
+    .from('grounds')
+    .select('*', { count: 'exact', head: true });
+
+  const groundsBody =
+    groundsCount != null
+      ? `${groundsCount} grounds mapped across Europe. Click a pin to visit the club.`
+      : 'Grounds mapped across Europe. Click a pin to visit the club.';
+
   const DOORS = [
     {
       key: 'supporter-groups',
@@ -45,8 +55,8 @@ export default async function Home() {
       dot: '#FFFFFF',
       pillBg: 'rgba(255,255,255,0.1)',
       pillBorder: 'rgba(255,255,255,0.3)',
-      headline: 'Every ground, mapped.',
-      body: '65+ grounds across Europe\u2019s top leagues. Click a pin to visit the club.',
+      headline: 'Football grounds, mapped.',
+      body: groundsBody,
       cta: 'Open the map',
       href: '/club-map',
     },
