@@ -10,11 +10,25 @@ export const revalidate = 60; // refresh from Supabase at most once per minute
 export default async function SportsBarsPage() {
   // Only ever show bars whose links are known-good — matches the same
   // "pin disappears if all links are dead" rule planned for the link-checker sweep.
-  const { data: barsData } = await supabase
-    .from('sports_bars')
-    .select('id, name, location, country, url, latitude, longitude')
-    .neq('link_status', 'pending_removal')
-    .not('url', 'is', null);
+  // Supabase/PostgREST caps any single query at 1000 rows by default —
+  // paginate in batches to pull the full table as bars grow past that.
+  const PAGE_SIZE = 1000;
+  let barsData: { id: number; name: string; location: string | null; country: string | null; url: string | null; latitude: string | null; longitude: string | null }[] = [];
+  let from = 0;
+
+  while (true) {
+    const { data: page, error } = await supabase
+      .from('sports_bars')
+      .select('id, name, location, country, url, latitude, longitude')
+      .neq('link_status', 'pending_removal')
+      .not('url', 'is', null)
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error || !page || page.length === 0) break;
+    barsData = barsData.concat(page);
+    if (page.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
+  }
 
   // Supabase returns `numeric` columns as strings (to avoid float precision loss),
   // so lat/long need converting back to numbers here before Mapbox can plot them.
@@ -22,8 +36,8 @@ export default async function SportsBarsPage() {
     .map((b) => ({
       id: b.id,
       name: b.name,
-      location: b.location,
-      country: b.country,
+      location: b.location || '',
+      country: b.country || '',
       url: b.url,
       latitude: Number(b.latitude),
       longitude: Number(b.longitude),
