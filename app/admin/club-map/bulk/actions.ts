@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { supabaseAdmin } from '../../../../lib/supabase-admin'
+import { supabaseAdmin } from '../../../../lib/supabase-admin';
 
 type BulkRow = {
   name: string
