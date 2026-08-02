@@ -4,12 +4,33 @@ import BrowseSportsBars from './BrowseSportsBars'
 
 export const revalidate = 0
 
-export default async function SportsBarsAdminPage() {
-  const { data } = await supabaseAdmin
+const RESULTS_LIMIT = 200
+
+export default async function SportsBarsAdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>
+}) {
+  const { q } = await searchParams
+  const query = (q || '').trim()
+
+  const { count: totalCount } = await supabaseAdmin
+    .from('sports_bars')
+    .select('id', { count: 'exact', head: true })
+
+  let barsQuery = supabaseAdmin
     .from('sports_bars')
     .select('id, name, location, country, url, latitude, longitude, link_status')
     .order('name')
+    .limit(RESULTS_LIMIT)
 
+  if (query) {
+    barsQuery = barsQuery.or(
+      `name.ilike.%${query}%,location.ilike.%${query}%,country.ilike.%${query}%`
+    )
+  }
+
+  const { data } = await barsQuery
   const bars = data || []
 
   return (
@@ -19,7 +40,7 @@ export default async function SportsBarsAdminPage() {
           ← Back to admin
         </Link>
         <h1 style={{ fontSize: '24px', fontWeight: 700, margin: '16px 0 24px' }}>Browse & edit sports bars</h1>
-        <BrowseSportsBars bars={bars} />
+        <BrowseSportsBars bars={bars} query={query} totalCount={totalCount || 0} resultsLimit={RESULTS_LIMIT} />
       </div>
     </main>
   )

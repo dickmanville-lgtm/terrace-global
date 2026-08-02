@@ -1,6 +1,6 @@
 // app/club-map/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-import { supabaseAdmin } from '../../../../lib/supabase-admin';
+import { supabaseAdmin } from '../../../lib/supabase-admin';
 
 export const revalidate = 60;
 

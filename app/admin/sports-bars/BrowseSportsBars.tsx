@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { updateSportsBar, deleteSportsBar } from './actions'
 
 type SportsBar = {
@@ -24,22 +24,42 @@ const labelStyle: React.CSSProperties = {
   display: 'block', fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px',
 }
 
-export default function BrowseSportsBars({ bars }: { bars: SportsBar[] }) {
+export default function BrowseSportsBars({
+  bars,
+  query,
+  totalCount,
+  resultsLimit,
+}: {
+  bars: SportsBar[]
+  query: string
+  totalCount: number
+  resultsLimit: number
+}) {
   const router = useRouter()
-  const [search, setSearch] = useState('')
+  const searchParams = useSearchParams()
+  const [search, setSearch] = useState(query)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState<SportsBar | null>(null)
   const [status, setStatus] = useState<Record<number, string>>({})
 
-  const filtered = bars.filter(b => {
-    const q = search.trim().toLowerCase()
-    if (!q) return true
-    return (
-      b.name.toLowerCase().includes(q) ||
-      (b.location || '').toLowerCase().includes(q) ||
-      (b.country || '').toLowerCase().includes(q)
-    )
-  })
+  // Debounce: update the URL (and trigger a fresh server-side search) 400ms after typing stops.
+  useEffect(() => {
+    const trimmed = search.trim()
+    const currentQ = searchParams.get('q') || ''
+    if (trimmed === currentQ) return
+
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (trimmed) {
+        params.set('q', trimmed)
+      } else {
+        params.delete('q')
+      }
+      router.push(`/admin/sports-bars?${params.toString()}`)
+    }, 400)
+
+    return () => clearTimeout(timeout)
+  }, [search])
 
   function startEdit(b: SportsBar) {
     setEditingId(b.id)
@@ -88,19 +108,21 @@ export default function BrowseSportsBars({ bars }: { bars: SportsBar[] }) {
       <input
         value={search}
         onChange={e => setSearch(e.target.value)}
-        style={{ ...inputStyle, marginBottom: '24px', maxWidth: '320px' }}
+        style={{ ...inputStyle, marginBottom: '8px', maxWidth: '320px' }}
         placeholder="e.g. Ibiza, Tamesis, Spain"
       />
 
-      <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginBottom: '16px', marginTop: '-12px' }}>
-        {filtered.length} of {bars.length} bar{bars.length === 1 ? '' : 's'}
+      <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginBottom: '24px' }}>
+        {query
+          ? `${bars.length} match${bars.length === 1 ? '' : 'es'} for "${query}" (of ${totalCount.toLocaleString()} total bars)`
+          : `Showing first ${Math.min(resultsLimit, bars.length)} of ${totalCount.toLocaleString()} bars, alphabetically — search to find a specific one`}
       </p>
 
-      {filtered.length === 0 && (
+      {bars.length === 0 && (
         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>No bars match that search.</p>
       )}
 
-      {filtered.map(b => (
+      {bars.map(b => (
         <div key={b.id} style={{
           border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px',
           padding: '16px', marginBottom: '12px', background: 'rgba(255,255,255,0.02)',
