@@ -46,8 +46,7 @@ export default function GroundsMap({ grounds }: { grounds: Ground[] }) {
           properties: {
             club: ground.club || ground.name,
             stadium: ground.name,
-            country: ground.country || '',
-            website: ground.website || '',
+            slug: ground.slug || '',
           },
         })),
       };
@@ -109,11 +108,10 @@ export default function GroundsMap({ grounds }: { grounds: Ground[] }) {
           .setLngLat(coords)
           .setHTML(
             `<div style="font-family:sans-serif;padding:4px 6px">
-              <strong style="font-size:14px">${props.club}</strong><br/>
-              <span style="font-size:12px;color:#aaa">${props.stadium}</span><br/>
-              <span style="font-size:12px;color:#aaa">${props.country}</span><br/><br/>
-              <button onclick="window.open('${props.website}','_blank')" style="background:#fff;color:#000;border:none;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px">
-                Visit club website &rarr;</button>
+              <strong style="font-size:14px;color:#000">${props.club}</strong><br/>
+              <span style="font-size:12px;color:#aaa">${props.stadium}</span><br/><br/>
+              <button onclick="window.location.href='/club-map/${props.slug}'" style="background:#fff;color:#000;border:none;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px">
+                Club Page &rarr;</button>
             </div>`
           )
           .addTo(map.current!);
