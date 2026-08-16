@@ -4,13 +4,19 @@ import { supabaseAdmin } from '../../../lib/supabase-admin';
 
 export const revalidate = 60;
 
+interface BlockContent {
+  image_url?: string;
+  caption?: string;
+  body?: string;
+}
+
 interface Block {
   id: string;
   block_type: string;
   title: string;
   description: string | null;
   url: string | null;
-  content: any;
+  content: BlockContent;
   display_order: number;
 }
 
@@ -84,7 +90,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
         </header>
 
         {sections.map(function (section) {
-          const injectWebsite = section.section_key === 'home_fans' ? ground.website : null;
+          const injectWebsite = section.section_key === 'club_ground_info' ? ground.website : null;
           return (
             <SectionBlock
               key={section.id}
@@ -104,29 +110,41 @@ function SectionBlock(props: { section: Section; injectWebsite: string | null })
   const hasWebsite = injectWebsite ? true : false;
   const hasContent = hasWebsite || section.blocks.length > 0;
 
+  const firstPhotoIndex = section.blocks.findIndex(function (b) {
+    return b.block_type === 'photo';
+  });
+
   return (
     <section className="mb-10">
-      <h2 className="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2">
-        {section.title}
-      </h2>
+      {section.section_key !== 'club_ground_info' && (
+        <h2 className="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2">
+          {section.title}
+        </h2>
+      )}
 
       {!hasContent && <p className="text-gray-400 italic">Coming soon</p>}
 
       {hasContent && (
-        <ul className="space-y-3">
-          {hasWebsite && (
-            <li>
-              <WebsiteLink url={injectWebsite as string} />
-            </li>
+        <div className="space-y-4">
+          {/* Website link with no photo block at all: show right under the heading */}
+          {hasWebsite && firstPhotoIndex === -1 && (
+            <WebsiteLink url={injectWebsite as string} />
           )}
-          {section.blocks.map(function (block) {
+
+          {section.blocks.map(function (block, index) {
             return (
-              <li key={block.id}>
+              <div key={block.id}>
                 <BlockItem block={block} />
-              </li>
+                {/* Website link after the first photo block */}
+                {hasWebsite && index === firstPhotoIndex && (
+                  <div className="mt-2">
+                    <WebsiteLink url={injectWebsite as string} />
+                  </div>
+                )}
+              </div>
             );
           })}
-        </ul>
+        </div>
       )}
     </section>
   );
@@ -143,16 +161,53 @@ function WebsiteLink(props: { url: string }) {
 
 function BlockItem(props: { block: Block }) {
   const block = props.block;
-  const linkStyle = "text-blue-700 hover:underline font-medium";
+  const content = block.content || {};
 
-  if (block.block_type === 'link' && block.url) {
+  if (block.block_type === 'photo') {
+    if (!content.image_url) return null;
     return (
-      <a href={block.url} target="_blank" rel="noopener noreferrer" className={linkStyle}>
-        {block.title} →
-      </a>
+      <div>
+        <img
+          src={content.image_url}
+          alt={content.caption || block.title || ''}
+          className="w-full rounded"
+        />
+        {content.caption && (
+          <p className="text-gray-500 text-sm mt-1">{content.caption}</p>
+        )}
+      </div>
     );
   }
 
+  if (block.block_type === 'banner') {
+    if (!content.image_url) return null;
+    const banner = (
+      <img src={content.image_url} alt={block.title || 'Sponsored'} className="w-full rounded" />
+    );
+    if (block.url) {
+      return (
+        <a href={block.url} target="_blank" rel="noopener noreferrer">
+          {banner}
+        </a>
+      );
+    }
+    return banner;
+  }
+
+  if (block.block_type === 'text') {
+    return (
+      <div>
+        {block.title && (
+          <h3 className="text-lg font-semibold mb-1">{block.title}</h3>
+        )}
+        {content.body && (
+          <p className="text-gray-700 whitespace-pre-wrap">{content.body}</p>
+        )}
+      </div>
+    );
+  }
+
+  // fallback for any legacy block types (e.g. old 'link' blocks)
   return (
     <div>
       <span className="font-medium">{block.title}</span>
