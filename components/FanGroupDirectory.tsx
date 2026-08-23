@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { readableAccent } from '@/lib/color'
 
 export type FanGroupRow = {
+  id: number;
   name: string;
   city: string | null;
   country: string | null;
@@ -97,7 +98,7 @@ export default function FanGroupDirectory({
 
                   return (
                     <div
-                      key={group.name}
+                      key={group.id}
                       className="tg-fan-card"
                       style={{
                         display: 'block', background: 'rgba(255,255,255,0.03)',

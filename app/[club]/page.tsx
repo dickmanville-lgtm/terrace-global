@@ -73,7 +73,7 @@ export default async function ClubPage({
   const { data: groupsData } = await supabase
     .from('fan_groups')
     .select(
-      'name, city, country, latitude, longitude, url, description, region, type, instagram_url, facebook_url, tiktok_url'
+      'id, name, city, country, latitude, longitude, url, description, region, type, instagram_url, facebook_url, tiktok_url'
     )
     .eq('club_id', club.id);
 
