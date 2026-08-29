@@ -24,11 +24,12 @@ export default function GroundsMap({ grounds }: { grounds: Ground[] }) {
 
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
-    map.current = new mapboxgl.Map({
+       map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/dark-v11',
       center: [10.0, 51.0],
       zoom: 3.5,
+      minZoom: 3,
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
