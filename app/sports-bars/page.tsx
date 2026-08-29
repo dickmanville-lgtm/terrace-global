@@ -3,46 +3,18 @@ import Footer from '../../components/Footer';
 import { supabase } from '@/lib/supabase';
 import SportsBarsMapLoader from './SportsBarsMapLoader';
 import AddBarPill from '../../components/AddBarPill';
-import type { SportsBar } from '../../components/SportsBarsMap';
 
 export const revalidate = 60; // refresh from Supabase at most once per minute
 
 export default async function SportsBarsPage() {
-  // Only ever show bars whose links are known-good — matches the same
-  // "pin disappears if all links are dead" rule planned for the link-checker sweep.
-  // Supabase/PostgREST caps any single query at 1000 rows by default —
-  // paginate in batches to pull the full table as bars grow past that.
-  const PAGE_SIZE = 1000;
-  let barsData: { id: number; name: string; location: string | null; country: string | null; url: string | null; latitude: string | null; longitude: string | null }[] = [];
-  let from = 0;
+  // Just a count now — the map fetches its own pins per-viewport via /api/sports-bars.
+  const { count } = await supabase
+    .from('sports_bars')
+    .select('id', { count: 'exact', head: true })
+    .neq('link_status', 'pending_removal')
+    .not('url', 'is', null);
 
-  while (true) {
-    const { data: page, error } = await supabase
-      .from('sports_bars')
-      .select('id, name, location, country, url, latitude, longitude')
-      .neq('link_status', 'pending_removal')
-      .not('url', 'is', null)
-      .range(from, from + PAGE_SIZE - 1);
-
-    if (error || !page || page.length === 0) break;
-    barsData = barsData.concat(page);
-    if (page.length < PAGE_SIZE) break;
-    from += PAGE_SIZE;
-  }
-
-  // Supabase returns `numeric` columns as strings (to avoid float precision loss),
-  // so lat/long need converting back to numbers here before Mapbox can plot them.
-  const bars: SportsBar[] = (barsData || [])
-    .map((b) => ({
-      id: b.id,
-      name: b.name,
-      location: b.location || '',
-      country: b.country || '',
-      url: b.url,
-      latitude: Number(b.latitude),
-      longitude: Number(b.longitude),
-    }))
-    .filter((b) => !isNaN(b.latitude) && !isNaN(b.longitude));
+  const barCount = count || 0;
 
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: "'Inter', sans-serif" }}>
@@ -60,7 +32,7 @@ export default async function SportsBarsPage() {
             Find a bar showing<br /><span style={{ color: 'rgba(255,255,255,0.4)' }}>the match, wherever you are.</span>
           </h1>
           <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: '520px', marginBottom: '16px' }}>
-            {bars.length} bars mapped worldwide. Zoom in on your holiday resort, city break, or away day — click a pin for the link.
+            {barCount} bars mapped worldwide. Zoom in on your holiday resort, city break, or away day — click a pin for the link.
           </p>
           <AddBarPill variant="link" />
         </div>
@@ -68,10 +40,10 @@ export default async function SportsBarsPage() {
 
       {/* Map */}
       <section style={{ height: 'calc(100vh - 280px)', minHeight: '500px', position: 'relative' }}>
-        <SportsBarsMapLoader bars={bars} />
+        <SportsBarsMapLoader />
       </section>
 
-      <Footer stat={`Sports Bars · ${bars.length} mapped`} />
+      <Footer stat={`Sports Bars · ${barCount} mapped`} />
 
     </main>
   );

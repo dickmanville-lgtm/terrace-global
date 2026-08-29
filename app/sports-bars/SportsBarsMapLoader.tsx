@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import type { SportsBar } from '../../components/SportsBarsMap';
 
 const SportsBarsMap = dynamic(() => import('../../components/SportsBarsMap'), {
   ssr: false,
@@ -16,6 +15,6 @@ const SportsBarsMap = dynamic(() => import('../../components/SportsBarsMap'), {
   ),
 });
 
-export default function SportsBarsMapLoader({ bars }: { bars: SportsBar[] }) {
-  return <SportsBarsMap bars={bars} />;
+export default function SportsBarsMapLoader() {
+  return <SportsBarsMap />;
 }

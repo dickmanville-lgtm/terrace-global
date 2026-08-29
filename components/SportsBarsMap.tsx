@@ -14,9 +14,10 @@ export type SportsBar = {
   longitude: number;
 };
 
-export default function SportsBarsMap({ bars }: { bars: SportsBar[] }) {
+export default function SportsBarsMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -33,24 +34,52 @@ export default function SportsBarsMap({ bars }: { bars: SportsBar[] }) {
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    map.current.on('load', () => {
-      const geojson: GeoJSON.FeatureCollection = {
-        type: 'FeatureCollection',
-        features: bars.map((bar) => ({
-          type: 'Feature',
-          geometry: { type: 'Point', coordinates: [bar.longitude, bar.latitude] },
-          properties: {
-            name: bar.name,
-            location: bar.location,
-            country: bar.country,
-            url: bar.url || '',
-          },
-        })),
-      };
+    // Fetches only the bars within the map's current bounding box from our
+    // viewport-based API route, then swaps them into the existing GeoJSON
+    // source in place — no full-table fetch, no source rebuild.
+    const fetchAndSetBars = async () => {
+      if (!map.current) return;
+      const bounds = map.current.getBounds();
+      if (!bounds) return;
 
+      const params = new URLSearchParams({
+        minLng: String(bounds.getWest()),
+        minLat: String(bounds.getSouth()),
+        maxLng: String(bounds.getEast()),
+        maxLat: String(bounds.getNorth()),
+      });
+
+      try {
+        const res = await fetch(`/api/sports-bars?${params.toString()}`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const bars: SportsBar[] = json.bars || [];
+
+        const geojson: GeoJSON.FeatureCollection = {
+          type: 'FeatureCollection',
+          features: bars.map((bar) => ({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [bar.longitude, bar.latitude] },
+            properties: {
+              name: bar.name,
+              location: bar.location,
+              country: bar.country,
+              url: bar.url || '',
+            },
+          })),
+        };
+
+        const source = map.current!.getSource('sports-bars') as mapboxgl.GeoJSONSource | undefined;
+        source?.setData(geojson);
+      } catch {
+        // Silent fail — keep whatever pins are already on screen rather than clearing the map.
+      }
+    };
+
+    map.current.on('load', () => {
       map.current!.addSource('sports-bars', {
         type: 'geojson',
-        data: geojson,
+        data: { type: 'FeatureCollection', features: [] }, // populated by fetchAndSetBars below
         cluster: true,
         clusterMaxZoom: 11,
         clusterRadius: 45,
@@ -137,10 +166,23 @@ export default function SportsBarsMap({ bars }: { bars: SportsBar[] }) {
       map.current!.on('mouseleave', 'unclustered-point', () => { map.current!.getCanvas().style.cursor = ''; });
       map.current!.on('mouseenter', 'clusters', () => { map.current!.getCanvas().style.cursor = 'pointer'; });
       map.current!.on('mouseleave', 'clusters', () => { map.current!.getCanvas().style.cursor = ''; });
+
+      // Initial load — fetch bars for the default world view.
+      fetchAndSetBars();
     });
 
-    return () => { map.current?.remove(); map.current = null; };
-  }, [bars]);
+    // Refetch on pan/zoom, debounced so a drag doesn't fire a request per frame.
+    map.current.on('moveend', () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      debounceTimer.current = setTimeout(fetchAndSetBars, 300);
+    });
+
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      map.current?.remove();
+      map.current = null;
+    };
+  }, []);
 
   return <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />;
 }
