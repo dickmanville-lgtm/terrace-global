@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import Link from 'next/link';
+import DeleteClubButton from './DeleteClubButton';
 
 export default async function ClubMapAdminIndex() {
   const { data: grounds } = await supabaseAdmin
@@ -39,6 +40,20 @@ export default async function ClubMapAdminIndex() {
       <p style={{ color: '#666', marginBottom: '1.5rem' }}>
         {grounds?.length ?? 0} clubs. Click any club to add or edit its page content.
       </p>
+      <Link
+  href="/admin/club-map/new"
+  style={{
+    display: 'inline-block',
+    marginBottom: '1.5rem',
+    padding: '0.5rem 1rem',
+    background: '#111',
+    color: '#fff',
+    borderRadius: 6,
+    textDecoration: 'none',
+  }}
+>
+  + Add new club
+</Link>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {grounds?.map((ground) => {
@@ -48,28 +63,32 @@ export default async function ClubMapAdminIndex() {
             : 0;
 
           return (
-            <Link
-              key={ground.id}
-              href={`/admin/club-map/${ground.slug}/edit`}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '0.75rem 1rem',
-                border: '1px solid #ddd',
-                borderRadius: 6,
-                textDecoration: 'none',
-                color: '#000',
-              }}
-            >
-              <span>
-                <strong>{ground.club}</strong>{' '}
-                <span style={{ color: '#999' }}>({ground.country})</span>
-              </span>
-              <span style={{ color: blockCount > 0 ? '#2f6b4f' : '#999' }}>
-                {blockCount > 0 ? `${blockCount} block${blockCount === 1 ? '' : 's'}` : 'No content'}
-              </span>
-            </Link>
-          );
+  <div
+    key={ground.id}
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0.75rem 1rem',
+      border: '1px solid #ddd',
+      borderRadius: 6,
+    }}
+  >
+    <Link
+      href={`/admin/club-map/${ground.slug}/edit`}
+      style={{ textDecoration: 'none', color: '#000', flex: 1 }}
+    >
+      <strong>{ground.club}</strong>{' '}
+      <span style={{ color: '#999' }}>({ground.country})</span>
+      {' — '}
+      <span style={{ color: blockCount > 0 ? '#2f6b4f' : '#999' }}>
+        {blockCount > 0 ? `${blockCount} block${blockCount === 1 ? '' : 's'}` : 'No content'}
+      </span>
+    </Link>
+
+    <DeleteClubButton groundId={ground.id} clubName={ground.club} />
+  </div>
+);
         })}
       </div>
     </div>
