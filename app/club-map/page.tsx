@@ -1,5 +1,6 @@
 import SiteNav from '../../components/SiteNav';
 import Footer from '../../components/Footer';
+import ClubDirectory from '../../components/ClubDirectory';
 import { supabase } from '@/lib/supabase';
 import GroundsMapClient from '../../components/GroundsMapClient';
 import type { Ground } from '../../components/GroundsMap';
@@ -33,9 +34,18 @@ export default async function ClubMapPage() {
         </div>
       </section>
 
-      {/* Map */}
+            {/* Map */}
       <section style={{ height: 'calc(100vh - 280px)', minHeight: '500px', position: 'relative' }}>
         <GroundsMapClient grounds={grounds} />
+      </section>
+
+      {/* Directory */}
+      <section style={{ padding: '64px 32px', maxWidth: '960px', margin: '0 auto' }}>
+        <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}>Club directory</h2>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', marginBottom: '32px' }}>
+          Every club we cover, grouped by country. Click any club to visit its page.
+        </p>
+        <ClubDirectory clubs={grounds.filter((g): g is typeof g & { slug: string } => !!g.slug)} />
       </section>
 
       <Footer stat="Club Map" />
