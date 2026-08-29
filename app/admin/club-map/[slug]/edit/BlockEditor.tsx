@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { addBlock, updateBlock, deleteBlock, moveBlock, Block, BlockType } from './actions';
+import { addBlock, updateBlock, deleteBlock, moveBlock, uploadBlockImage, Block, BlockType } from './actions';
 
 export default function BlockEditor({
   sectionId,
@@ -80,7 +80,7 @@ export default function BlockEditor({
             </div>
           </div>
 
-          <BlockFields block={block} onSave={handleSave} disabled={pending} />
+          <BlockFields block={block} onSave={handleSave} disabled={pending} slug={slug} />
         </div>
       ))}
     </div>
@@ -91,16 +91,19 @@ function BlockFields({
   block,
   onSave,
   disabled,
+  slug,
 }: {
   block: Block;
   onSave: (blockId: string, title: string, url: string, content: Block['content']) => void;
   disabled: boolean;
+  slug: string;
 }) {
   const [title, setTitle] = useState(block.title);
   const [url, setUrl] = useState(block.url ?? '');
   const [imageUrl, setImageUrl] = useState(block.content?.image_url ?? '');
   const [caption, setCaption] = useState(block.content?.caption ?? '');
   const [body, setBody] = useState(block.content?.body ?? '');
+  const [uploading, setUploading] = useState(false);
 
   function save() {
     let content: Block['content'] = {};
@@ -109,6 +112,25 @@ function BlockFields({
     if (block.block_type === 'text') content = { body };
     onSave(block.id, title, url, content);
   }
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  setUploading(true);
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('slug', slug);
+
+  const result = await uploadBlockImage(formData);
+
+  if (result.success && result.url) {
+    setImageUrl(result.url);
+  } else {
+    alert(`Upload failed: ${result.error}`);
+  }
+
+  setUploading(false);
+}
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -121,12 +143,28 @@ function BlockFields({
       )}
 
       {(block.block_type === 'photo' || block.block_type === 'banner') && (
-        <input
-          placeholder="Image URL (upload wiring comes next session — paste a URL for now)"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-        />
-      )}
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    {imageUrl && (
+      <img
+        src={imageUrl}
+        alt=""
+        style={{ maxWidth: 200, maxHeight: 120, objectFit: 'cover', borderRadius: 4 }}
+      />
+    )}
+    <input
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      onChange={handleFileUpload}
+      disabled={uploading}
+    />
+    {uploading && <span style={{ color: '#999' }}>Uploading…</span>}
+    <input
+      placeholder="Or paste an image URL directly"
+      value={imageUrl}
+      onChange={(e) => setImageUrl(e.target.value)}
+    />
+  </div>
+)}
 
       {block.block_type === 'photo' && (
         <input

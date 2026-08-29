@@ -137,3 +137,26 @@ export async function moveBlock(
   revalidatePath(`/admin/club-map/${slug}/edit`);
   return { success: true };
 }
+export async function uploadBlockImage(formData: FormData) {
+  const file = formData.get('file') as File | null;
+  const slug = formData.get('slug') as string;
+
+  if (!file || !slug) {
+    return { success: false, error: 'Missing file or slug' };
+  }
+
+  const ext = file.name.split('.').pop() || 'jpg';
+  const path = `${slug}/${Date.now()}.${ext}`;
+
+  const { error } = await supabaseAdmin.storage
+    .from('club-images')
+    .upload(path, file, { upsert: false });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  const { data } = supabaseAdmin.storage.from('club-images').getPublicUrl(path);
+
+  return { success: true, url: data.publicUrl };
+}
