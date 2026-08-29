@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function addClub(formData: FormData) {
   const name = formData.get('name') as string;
@@ -45,6 +46,6 @@ export async function addClub(formData: FormData) {
   if (sectionError) {
     redirect(`/admin/club-map/new?error=${encodeURIComponent('Club created but section failed: ' + sectionError.message)}`);
   }
-
+revalidatePath('/admin/club-map');
   redirect('/admin/club-map');
 }
