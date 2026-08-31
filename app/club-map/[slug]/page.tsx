@@ -5,13 +5,19 @@ import { supabaseAdmin } from '../../../lib/supabase-admin';
 export const revalidate = 60;
 
 const ACCENT = '#2B6CB0';
-const BG = '#F6F7F5';
+const BG = '#F1ECE1';
 const TEXT = '#1A1A1A';
 
 interface BlockContent {
   image_url?: string;
   caption?: string;
   body?: string;
+  transport?: string;
+  museum?: string;
+  shop?: string;
+  entry_points?: string;
+  pubs?: string;
+  eateries?: string;
 }
 
 interface Block {
@@ -227,7 +233,34 @@ function BlockItem(props: { block: Block }) {
         )}
       </div>
     );
-  }
+  }if (block.block_type === 'visiting_info') {
+  const items: { label: string; value?: string }[] = [
+    { label: 'Transport Links', value: content.transport },
+    { label: 'Club Museum', value: content.museum },
+    { label: 'Club Shop', value: content.shop },
+    { label: 'Away Fans Entry Points', value: content.entry_points },
+    { label: 'Local Pubs (¼ mile)', value: content.pubs },
+    { label: 'Eateries / Restaurants', value: content.eateries },
+  ].filter((item) => item.value);
+
+  if (items.length === 0) return null;
+
+   return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Visiting Supporters</h3>
+      {items.map((item) => (
+        <div key={item.label}>
+          <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '4px', color: '#1A1A1A' }}>
+            {item.label}
+          </h4>
+          <p style={{ color: '#3A3A3A', fontSize: '14.5px', lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>
+            {item.value}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
   // fallback for any legacy block types (e.g. old 'link' blocks)
   return (

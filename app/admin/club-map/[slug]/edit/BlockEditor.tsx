@@ -53,9 +53,10 @@ export default function BlockEditor({
   return (
     <div style={{ marginTop: '2rem' }}>
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        <button disabled={pending} onClick={() => handleAdd('photo')}>+ Photo block</button>
-        <button disabled={pending} onClick={() => handleAdd('banner')}>+ Banner block</button>
-        <button disabled={pending} onClick={() => handleAdd('text')}>+ Text block</button>
+       <button disabled={pending} onClick={() => handleAdd('photo')}>+ Photo block</button>
+<button disabled={pending} onClick={() => handleAdd('banner')}>+ Banner block</button>
+<button disabled={pending} onClick={() => handleAdd('text')}>+ Text block</button>
+<button disabled={pending} onClick={() => handleAdd('visiting_info')}>+ Visiting Supporters block</button>
       </div>
 
       {blocks.length === 0 && <p style={{ color: '#999' }}>No blocks yet — add one above.</p>}
@@ -103,6 +104,12 @@ function BlockFields({
   const [imageUrl, setImageUrl] = useState(block.content?.image_url ?? '');
   const [caption, setCaption] = useState(block.content?.caption ?? '');
   const [body, setBody] = useState(block.content?.body ?? '');
+  const [transport, setTransport] = useState(block.content?.transport ?? '');
+const [museum, setMuseum] = useState(block.content?.museum ?? '');
+const [shop, setShop] = useState(block.content?.shop ?? '');
+const [entryPoints, setEntryPoints] = useState(block.content?.entry_points ?? '');
+const [pubs, setPubs] = useState(block.content?.pubs ?? '');
+const [eateries, setEateries] = useState(block.content?.eateries ?? '');
   const [uploading, setUploading] = useState(false);
 
   function save() {
@@ -110,6 +117,7 @@ function BlockFields({
     if (block.block_type === 'photo') content = { image_url: imageUrl, caption };
     if (block.block_type === 'banner') content = { image_url: imageUrl };
     if (block.block_type === 'text') content = { body };
+    if (block.block_type === 'visiting_info') content = { transport, museum, shop, entry_points: entryPoints, pubs, eateries };
     onSave(block.id, title, url, content);
   }
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -190,7 +198,34 @@ function BlockFields({
           rows={5}
         />
       )}
-
+{block.block_type === 'visiting_info' && (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <label>
+      Transport Links
+      <textarea value={transport} onChange={(e) => setTransport(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
+    </label>
+    <label>
+      Club Museum
+      <textarea value={museum} onChange={(e) => setMuseum(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
+    </label>
+    <label>
+      Club Shop
+      <textarea value={shop} onChange={(e) => setShop(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
+    </label>
+    <label>
+      Away Fans Entry Points
+      <textarea value={entryPoints} onChange={(e) => setEntryPoints(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
+    </label>
+    <label>
+      Local Pubs (¼ mile)
+      <textarea value={pubs} onChange={(e) => setPubs(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
+    </label>
+    <label>
+      Eateries / Restaurants
+      <textarea value={eateries} onChange={(e) => setEateries(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
+    </label>
+  </div>
+)}
       <button disabled={disabled} onClick={save} style={{ alignSelf: 'flex-start' }}>
         Save block
       </button>

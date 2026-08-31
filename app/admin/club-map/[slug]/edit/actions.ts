@@ -3,12 +3,18 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
 
-export type BlockType = 'photo' | 'banner' | 'text';
+export type BlockType = 'photo' | 'banner' | 'text' | 'visiting_info';
 
 export interface BlockContent {
   image_url?: string;
   caption?: string;
   body?: string;
+  transport?: string;
+  museum?: string;
+  shop?: string;
+  entry_points?: string;
+  pubs?: string;
+  eateries?: string;
 }
 
 export interface Block {
