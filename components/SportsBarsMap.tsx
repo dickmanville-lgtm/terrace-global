@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -18,6 +18,10 @@ export default function SportsBarsMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState('');
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -184,5 +188,113 @@ export default function SportsBarsMap() {
     };
   }, []);
 
-  return <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />;
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (!searchQuery.trim() || !map.current) return;
+
+    setSearching(true);
+    setSearchError('');
+
+    try {
+      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
+      const res = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?access_token=${token}&limit=1`
+      );
+      const json = await res.json();
+
+      if (!json.features || json.features.length === 0) {
+        setSearchError('Place not found');
+        setSearching(false);
+        return;
+      }
+
+      const [lng, lat] = json.features[0].center;
+
+      // Choose a reasonable zoom based on the type of place returned —
+      // countries/regions get a wider view than cities or addresses.
+      const placeType = json.features[0].place_type?.[0];
+      const zoom = placeType === 'country' ? 4 : placeType === 'region' ? 6 : 10;
+
+      map.current.flyTo({ center: [lng, lat], zoom, duration: 1200 });
+      setSearching(false);
+    } catch {
+      setSearchError('Search failed');
+      setSearching(false);
+    }
+  }
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <form
+        onSubmit={handleSearch}
+        style={{
+          position: 'absolute',
+          top: 12,
+          left: 12,
+          zIndex: 10,
+          display: 'flex',
+          gap: 6,
+          background: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(8px)',
+          padding: 6,
+          borderRadius: 8,
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}
+      >
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search country, city, region..."
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 6,
+            padding: '8px 10px',
+            fontSize: 13,
+            color: '#fff',
+            width: 220,
+            outline: 'none',
+          }}
+        />
+        <button
+          type="submit"
+          disabled={searching}
+          style={{
+            background: '#F97316',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 6,
+            padding: '8px 14px',
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: searching ? 'default' : 'pointer',
+            opacity: searching ? 0.6 : 1,
+          }}
+        >
+          {searching ? '...' : 'Go'}
+        </button>
+      </form>
+
+      {searchError && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 56,
+            left: 12,
+            zIndex: 10,
+            background: 'rgba(220,38,38,0.9)',
+            color: '#fff',
+            fontSize: 12,
+            padding: '6px 10px',
+            borderRadius: 6,
+          }}
+        >
+          {searchError}
+        </div>
+      )}
+
+      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
+    </div>
+  );
 }
