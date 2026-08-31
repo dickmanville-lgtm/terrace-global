@@ -4,6 +4,10 @@ import { supabaseAdmin } from '../../../lib/supabase-admin';
 
 export const revalidate = 60;
 
+const ACCENT = '#2B6CB0';
+const BG = '#F6F7F5';
+const TEXT = '#1A1A1A';
+
 interface BlockContent {
   image_url?: string;
   caption?: string;
@@ -82,11 +86,13 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   const sections = data!.sections;
 
   return (
-    <div className="min-h-screen bg-white text-black">
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <header className="mb-10">
-          <h1 className="text-4xl font-bold">{ground.club}</h1>
-          <p className="text-gray-600 mt-1">{ground.country}</p>
+    <div style={{ minHeight: '100vh', background: BG, color: TEXT, fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ maxWidth: '720px', margin: '0 auto', padding: '56px 24px 80px' }}>
+        <header style={{ marginBottom: '48px' }}>
+          <h1 style={{ fontSize: '40px', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+            {ground.club}
+          </h1>
+          <p style={{ color: '#6B6B6B', marginTop: '6px', fontSize: '15px' }}>{ground.country}</p>
         </header>
 
         {sections.map(function (section) {
@@ -115,18 +121,17 @@ function SectionBlock(props: { section: Section; injectWebsite: string | null })
   });
 
   return (
-    <section className="mb-10">
+    <section style={{ marginBottom: '48px' }}>
       {section.section_key !== 'club_ground_info' && (
-        <h2 className="text-2xl font-semibold mb-4 border-b border-gray-200 pb-2">
+        <h2 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #E2E0DB' }}>
           {section.title}
         </h2>
       )}
 
-      {!hasContent && <p className="text-gray-400 italic">Coming soon</p>}
+      {!hasContent && <p style={{ color: '#999', fontStyle: 'italic' }}>Coming soon</p>}
 
       {hasContent && (
-        <div className="space-y-4">
-          {/* Website link with no photo block at all: show right under the heading */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {hasWebsite && firstPhotoIndex === -1 && (
             <WebsiteLink url={injectWebsite as string} />
           )}
@@ -135,9 +140,8 @@ function SectionBlock(props: { section: Section; injectWebsite: string | null })
             return (
               <div key={block.id}>
                 <BlockItem block={block} />
-                {/* Website link after the first photo block */}
                 {hasWebsite && index === firstPhotoIndex && (
-                  <div className="mt-2">
+                  <div style={{ marginTop: '10px' }}>
                     <WebsiteLink url={injectWebsite as string} />
                   </div>
                 )}
@@ -151,10 +155,14 @@ function SectionBlock(props: { section: Section; injectWebsite: string | null })
 }
 
 function WebsiteLink(props: { url: string }) {
-  const linkStyle = "text-blue-700 hover:underline font-medium";
   return (
-    <a href={props.url} target="_blank" rel="noopener noreferrer" className={linkStyle}>
-      Official Website →
+    
+     <a href={props.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: ACCENT, fontWeight: 600, textDecoration: 'none' }}
+    >
+      Official website →
     </a>
   );
 }
@@ -170,10 +178,10 @@ function BlockItem(props: { block: Block }) {
         <img
           src={content.image_url}
           alt={content.caption || block.title || ''}
-          className="w-full rounded"
+          style={{ width: '100%', borderRadius: '10px', display: 'block' }}
         />
         {content.caption && (
-          <p className="text-gray-500 text-sm mt-1">{content.caption}</p>
+          <p style={{ color: '#8A8A8A', fontSize: '13px', marginTop: '8px' }}>{content.caption}</p>
         )}
       </div>
     );
@@ -182,26 +190,40 @@ function BlockItem(props: { block: Block }) {
   if (block.block_type === 'banner') {
     if (!content.image_url) return null;
     const banner = (
-      <img src={content.image_url} alt={block.title || 'Sponsored'} className="w-full rounded" />
+      <div>
+        <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', color: '#8A8A8A', marginBottom: '8px' }}>
+          Sponsored
+        </div>
+        <img
+          src={content.image_url}
+          alt={block.title || 'Sponsored'}
+          style={{ width: '100%', display: 'block', borderRadius: '8px' }}
+        />
+      </div>
     );
-    if (block.url) {
-      return (
-        <a href={block.url} target="_blank" rel="noopener noreferrer">
-          {banner}
-        </a>
-      );
-    }
-    return banner;
+    return (
+      <div style={{ border: `1px solid ${ACCENT}55`, borderRadius: '10px', padding: '16px' }}>
+        {block.url ? (
+          <a href={block.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            {banner}
+          </a>
+        ) : (
+          banner
+        )}
+      </div>
+    );
   }
 
   if (block.block_type === 'text') {
     return (
       <div>
         {block.title && (
-          <h3 className="text-lg font-semibold mb-1">{block.title}</h3>
+          <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>{block.title}</h3>
         )}
         {content.body && (
-          <p className="text-gray-700 whitespace-pre-wrap">{content.body}</p>
+          <p style={{ color: '#3A3A3A', lineHeight: 1.75, whiteSpace: 'pre-wrap', fontSize: '15.5px' }}>
+            {content.body}
+          </p>
         )}
       </div>
     );
@@ -210,9 +232,9 @@ function BlockItem(props: { block: Block }) {
   // fallback for any legacy block types (e.g. old 'link' blocks)
   return (
     <div>
-      <span className="font-medium">{block.title}</span>
+      <span style={{ fontWeight: 600 }}>{block.title}</span>
       {block.description && (
-        <p className="text-gray-600 text-sm mt-1">{block.description}</p>
+        <p style={{ color: '#6B6B6B', fontSize: '13px', marginTop: '6px' }}>{block.description}</p>
       )}
     </div>
   );
