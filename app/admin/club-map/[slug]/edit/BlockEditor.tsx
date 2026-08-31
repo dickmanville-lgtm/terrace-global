@@ -57,6 +57,7 @@ export default function BlockEditor({
 <button disabled={pending} onClick={() => handleAdd('banner')}>+ Banner block</button>
 <button disabled={pending} onClick={() => handleAdd('text')}>+ Text block</button>
 <button disabled={pending} onClick={() => handleAdd('visiting_info')}>+ Visiting Supporters block</button>
+<button disabled={pending} onClick={() => handleAdd('fan_channels')}>+ Fan Channels block</button>
       </div>
 
       {blocks.length === 0 && <p style={{ color: '#999' }}>No blocks yet — add one above.</p>}
@@ -111,6 +112,23 @@ const [entryPoints, setEntryPoints] = useState(block.content?.entry_points ?? ''
 const [pubs, setPubs] = useState(block.content?.pubs ?? '');
 const [eateries, setEateries] = useState(block.content?.eateries ?? '');
 const [pasteAll, setPasteAll] = useState('');
+const [channels, setChannels] = useState<{ name: string; type: 'youtube' | 'podcast' | 'misc'; url: string }[]>(
+  block.content?.channels ?? []
+);
+
+function addChannel() {
+  setChannels([...channels, { name: '', type: 'youtube', url: '' }]);
+}
+
+function updateChannel(index: number, field: 'name' | 'type' | 'url', value: string) {
+  const updated = [...channels];
+  updated[index] = { ...updated[index], [field]: value as never };
+  setChannels(updated);
+}
+
+function removeChannel(index: number) {
+  setChannels(channels.filter((_, i) => i !== index));
+}
   const [uploading, setUploading] = useState(false);
 
   function parsePasteAll() {
@@ -148,7 +166,7 @@ const [pasteAll, setPasteAll] = useState('');
     if (block.block_type === 'photo') content = { image_url: imageUrl, caption };
     if (block.block_type === 'banner') content = { image_url: imageUrl };
     if (block.block_type === 'text') content = { body };
-    if (block.block_type === 'visiting_info') content = { transport, museum, shop, entry_points: entryPoints, pubs, eateries };
+    if (block.block_type === 'visiting_info') content = { transport, museum, shop, entry_points: entryPoints, pubs, eateries };if (block.block_type === 'fan_channels') content = { channels };
     onSave(block.id, title, url, content);
   }
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -268,9 +286,46 @@ const [pasteAll, setPasteAll] = useState('');
     <label>
       Eateries / Restaurants
       <textarea value={eateries} onChange={(e) => setEateries(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
-    </label>
+        </label>
   </div>
 )}
+
+{block.block_type === 'fan_channels' && (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    {channels.map((channel, index) => (
+      <div key={index} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', border: '1px solid #ddd', padding: '0.5rem', borderRadius: 4 }}>
+        <input
+          placeholder="Channel/podcast name"
+          value={channel.name}
+          onChange={(e) => updateChannel(index, 'name', e.target.value)}
+          style={{ flex: 2 }}
+        />
+        <select
+          value={channel.type}
+          onChange={(e) => updateChannel(index, 'type', e.target.value)}
+          style={{ flex: 1 }}
+        >
+          <option value="youtube">YouTube</option>
+          <option value="podcast">Podcast</option>
+          <option value="misc">Misc</option>
+        </select>
+        <input
+          placeholder="Link"
+          value={channel.url}
+          onChange={(e) => updateChannel(index, 'url', e.target.value)}
+          style={{ flex: 2 }}
+        />
+        <button type="button" onClick={() => removeChannel(index)} style={{ color: 'red' }}>
+          Remove
+        </button>
+      </div>
+    ))}
+    <button type="button" onClick={addChannel} style={{ alignSelf: 'flex-start' }}>
+      + Add channel
+    </button>
+  </div>
+)}
+
       <button disabled={disabled} onClick={save} style={{ alignSelf: 'flex-start' }}>
         Save block
       </button>

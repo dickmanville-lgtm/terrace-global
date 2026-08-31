@@ -3,7 +3,13 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
 
-export type BlockType = 'photo' | 'banner' | 'text' | 'visiting_info';
+export type BlockType = 'photo' | 'banner' | 'text' | 'visiting_info' | 'fan_channels';
+
+export interface FanChannel {
+  name: string;
+  type: 'youtube' | 'podcast' | 'misc';
+  url: string;
+}
 
 export interface BlockContent {
   image_url?: string;
@@ -15,6 +21,7 @@ export interface BlockContent {
   entry_points?: string;
   pubs?: string;
   eateries?: string;
+  channels?: FanChannel[];
 }
 
 export interface Block {

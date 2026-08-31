@@ -20,6 +20,7 @@ interface BlockContent {
   entry_points?: string;
   pubs?: string;
   eateries?: string;
+  channels?: { name: string; type: 'youtube' | 'podcast' | 'misc'; url: string }[];
 }
 
 interface Block {
@@ -262,6 +263,55 @@ function BlockItem(props: { block: Block }) {
           </p>
         </div>
       ))}
+       </div>
+  );
+}
+
+if (block.block_type === 'fan_channels') {
+  const channels = content.channels || [];
+  if (channels.length === 0) return null;
+
+  const typeLabel = { youtube: 'YouTube', podcast: 'Podcast', misc: 'More' };
+  const typeColor = { youtube: '#CC0000', podcast: '#7C3AED', misc: '#6B6B6B' };
+
+  return (
+    <div>
+      <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Fan Channels</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+               {channels.map((ch, i) => (
+          <a
+            key={i}
+            href={ch.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              textDecoration: 'none',
+              padding: '10px 14px',
+              border: '1px solid #E2E0DB',
+              borderRadius: '8px',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+                color: '#fff',
+                background: typeColor[ch.type] || '#6B6B6B',
+                padding: '3px 8px',
+                borderRadius: '4px',
+                flexShrink: 0,
+              }}
+            >
+              {typeLabel[ch.type] || 'Link'}
+            </span>
+            <span style={{ color: '#1A1A1A', fontWeight: 600, fontSize: '14.5px' }}>{ch.name}</span>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
