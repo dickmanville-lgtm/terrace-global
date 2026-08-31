@@ -35,7 +35,7 @@ export default async function ClubMapPage() {
       </section>
 
             {/* Map */}
-      <section style={{ height: 'calc(100vh - 280px)', minHeight: '500px', position: 'relative' }}>
+      <section style={{ height: 'calc((100vh - 280px) * 0.67)', minHeight: '350px', position: 'relative' }}>
         <GroundsMapClient grounds={grounds} />
       </section>
 
