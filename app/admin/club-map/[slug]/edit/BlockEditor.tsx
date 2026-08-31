@@ -110,9 +110,40 @@ const [shop, setShop] = useState(block.content?.shop ?? '');
 const [entryPoints, setEntryPoints] = useState(block.content?.entry_points ?? '');
 const [pubs, setPubs] = useState(block.content?.pubs ?? '');
 const [eateries, setEateries] = useState(block.content?.eateries ?? '');
+const [pasteAll, setPasteAll] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  function save() {
+  function parsePasteAll() {
+  const labels: { key: string; setter: (v: string) => void }[] = [
+    { key: 'Transport Links', setter: setTransport },
+    { key: 'Club Museum', setter: setMuseum },
+    { key: 'Club Shop', setter: setShop },
+    { key: 'Away Fans Entry Points', setter: setEntryPoints },
+    { key: 'Local Pubs', setter: setPubs },
+    { key: 'Eateries', setter: setEateries },
+  ];
+
+  let remaining = pasteAll;
+
+  for (let i = 0; i < labels.length; i++) {
+    const current = labels[i];
+    const startIdx = remaining.indexOf(current.key + ':');
+    if (startIdx === -1) continue;
+
+    const afterLabel = remaining.slice(startIdx + current.key.length + 1);
+
+    let endIdx = afterLabel.length;
+    for (let j = i + 1; j < labels.length; j++) {
+      const nextIdx = afterLabel.indexOf(labels[j].key + ':');
+      if (nextIdx !== -1 && nextIdx < endIdx) {
+        endIdx = nextIdx;
+      }
+    }
+
+    const value = afterLabel.slice(0, endIdx).trim();
+    current.setter(value);
+  }
+}function save() {
     let content: Block['content'] = {};
     if (block.block_type === 'photo') content = { image_url: imageUrl, caption };
     if (block.block_type === 'banner') content = { image_url: imageUrl };
@@ -200,6 +231,20 @@ const [eateries, setEateries] = useState(block.content?.eateries ?? '');
       )}
 {block.block_type === 'visiting_info' && (
   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div style={{ border: '1px dashed #999', padding: '0.75rem', borderRadius: 4 }}>
+      <label>
+        Paste all at once (format: "Transport Links: ... Club Museum: ..." etc)
+        <textarea
+          value={pasteAll}
+          onChange={(e) => setPasteAll(e.target.value)}
+          rows={6}
+          style={{ width: '100%', display: 'block' }}
+        />
+      </label>
+      <button type="button" onClick={parsePasteAll} style={{ marginTop: '0.5rem' }}>
+        Parse into fields below
+      </button>
+    </div>
     <label>
       Transport Links
       <textarea value={transport} onChange={(e) => setTransport(e.target.value)} rows={2} style={{ width: '100%', display: 'block' }} />
