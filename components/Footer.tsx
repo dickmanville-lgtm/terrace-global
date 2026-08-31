@@ -66,14 +66,15 @@ export default function Footer({
 }) {
   return (
     <footer
-      style={{
-        padding: '32px 32px',
-        borderTop: '1px solid rgba(255,255,255,0.08)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '18px',
-      }}
-    >
+  style={{
+    padding: '32px 32px',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '18px',
+    background: '#0a0a0a',
+  }}
+>
       <div
         style={{
           display: 'flex',

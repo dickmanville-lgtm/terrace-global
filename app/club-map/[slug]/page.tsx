@@ -1,6 +1,8 @@
 // app/club-map/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { supabaseAdmin } from '../../../lib/supabase-admin';
+import SiteNav from '../../../components/SiteNav';
+import Footer from '../../../components/Footer';
 
 export const revalidate = 60;
 
@@ -92,8 +94,9 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   const sections = data!.sections;
 
   return (
-    <div style={{ minHeight: '100vh', background: BG, color: TEXT, fontFamily: "'Inter', sans-serif" }}>
-      <div style={{ maxWidth: '720px', margin: '0 auto', padding: '56px 24px 80px' }}>
+  <div style={{ minHeight: '100vh', background: BG, fontFamily: "'Inter', sans-serif" }}>
+    <SiteNav active="club-map" />
+    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '56px 24px 80px', color: TEXT }}>
         <header style={{ marginBottom: '48px' }}>
           <h1 style={{ fontSize: '40px', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
             {ground.club}
@@ -109,9 +112,10 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
               section={section}
               injectWebsite={injectWebsite}
             />
-          );
-        })}
+            );
+          })}
       </div>
+      <Footer stat={`${ground.club} · Ground info`} />
     </div>
   );
 }
