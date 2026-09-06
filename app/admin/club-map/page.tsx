@@ -35,7 +35,10 @@ export default async function ClubMapAdminIndex() {
   }
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto', padding: '2rem' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto', padding: '2rem' }}>
+      <Link href="/admin" style={{ color: '#666', fontSize: '0.9rem' }}>
+        ← Back to admin
+      </Link>
       <h1>Club Content</h1>
       <p style={{ color: '#666', marginBottom: '1.5rem' }}>
         {grounds?.length ?? 0} clubs. Click any club to add or edit its page content.
