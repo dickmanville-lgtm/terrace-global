@@ -1,5 +1,6 @@
 import { addClub } from './actions';
 import Link from 'next/link';
+import AdminLocationField from '../../../../components/AdminLocationField';
 
 export default function NewClubPage() {
   return (
@@ -35,15 +36,7 @@ export default function NewClubPage() {
           <input name="website" style={{ width: '100%', display: 'block' }} placeholder="https://..." />
         </label>
 
-        <label>
-          Latitude
-          <input name="latitude" type="number" step="any" style={{ width: '100%', display: 'block' }} />
-        </label>
-
-        <label>
-          Longitude
-          <input name="longitude" type="number" step="any" style={{ width: '100%', display: 'block' }} />
-        </label>
+                <AdminLocationField />
 
         <button type="submit" style={{ alignSelf: 'flex-start' }}>Add club</button>
       </form>
