@@ -13,9 +13,9 @@ export default function AdminLocationField({
   const [lat, setLat] = useState(initialLat);
   const [lng, setLng] = useState(initialLng);
 
-  return (
-    <div>
-      <label style={{ display: 'block', marginBottom: '0.5rem' }}>Location</label>
+    return (
+    <div style={{ background: '#0a0a0a', padding: '1rem', borderRadius: '8px' }}>
+      <label style={{ display: 'block', marginBottom: '0.5rem', color: '#fff' }}>Location</label>
       <BarLocationPicker
         searchHint=""
         latitude={lat}
