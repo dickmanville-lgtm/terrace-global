@@ -1,4 +1,4 @@
-// Shared colour helpers for Terrace.
+// // Shared colour helpers for yourpeople.football.
 //
 // readableAccent: ensure a club's accent colour is readable on the near-black
 // (#0a0a0a) background. Keys off *perceived* brightness so bright-channel colours

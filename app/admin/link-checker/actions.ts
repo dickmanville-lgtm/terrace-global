@@ -27,7 +27,7 @@ async function checkLink(url: string): Promise<LinkCheckResult> {
       method: 'GET',
       redirect: 'follow',
       signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TerraceLinkChecker/1.0)' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; YourPeopleFootballLinkChecker/1.0)' },
     })
     clearTimeout(timeout)
 

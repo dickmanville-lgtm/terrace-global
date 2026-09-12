@@ -1,7 +1,7 @@
 // Normalizes user-entered Instagram/Facebook/TikTok input into a full URL.
-// Accepts: a bare handle ("@theterrace.football" or "theterrace.football"),
-// a domain without scheme ("instagram.com/theterrace.football"), or a
-// fully-formed URL ("https://instagram.com/theterrace.football") — all
+// Accepts: a bare handle ("@yourpeople.football" or "yourpeople.football"),
+// a domain without scheme ("instagram.com/yourpeople.football"), or a
+// fully-formed URL ("https://instagram.com/yourpeople.football") — all
 // three should end up pointing at the same place.
 
 type SocialPlatform = 'instagram' | 'facebook' | 'tiktok'
