@@ -13,7 +13,7 @@ const FOOTER_LINKS: FooterLink[] = [];
 // same convention as SiteNav's LINKS array.
 type SocialLink = { key: string; label: string; href: string | null };
 const SOCIALS: SocialLink[] = [
-  { key: 'instagram', label: 'Instagram', href: 'https://instagram.com/theterrace.football' },
+  { key: 'instagram', label: 'Instagram', href: 'https://instagram.com/yourpeople.football' },
   { key: 'x', label: 'X', href: null },
   { key: 'tiktok', label: 'TikTok', href: null },
 ];
@@ -59,7 +59,7 @@ export default function Footer({
   showBackLink = true,
   stat,
 }: {
-  /** Homepage passes false — every other page shows a "back to Terrace" link. */
+  /** Homepage passes false — every other page shows a "back to yourpeople.football" link. */
   showBackLink?: boolean;
   /** e.g. "Supporter Groups · 733+ fan groups", "Arsenal · The Gunners", "Club Map · 60+ grounds" */
   stat?: string;
@@ -89,13 +89,13 @@ export default function Footer({
             href="/"
             style={{ fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}
           >
-            &larr; Back to Terrace.
+            &larr; Back to yourpeople.football.
           </Link>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
-            <span style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)' }}>
-              The Terrace
+            <span style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', color: 'rgba(255,255,255,0.9)' }}>
+              yourpeople.football
             </span>
           </div>
         )}
@@ -140,7 +140,7 @@ export default function Footer({
         }}
       >
         <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>
-          Terrace.{stat ? ` · ${stat}` : ''}
+          yourpeople.football.{stat ? ` · ${stat}` : ''}
         </span>
 
         {FOOTER_LINKS.length > 0 && (
