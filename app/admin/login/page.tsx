@@ -32,7 +32,7 @@ export default async function LoginPage({
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter', sans-serif" }}>
       <form action={login} style={{ width: '320px', padding: '32px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Terrace Admin</h1>
+        <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>yourpeople.football Admin</h1>
         <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '24px' }}>Enter the admin password to continue.</p>
         <input
           type="password"
