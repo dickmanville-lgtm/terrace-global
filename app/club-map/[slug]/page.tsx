@@ -41,6 +41,11 @@ interface Section {
   blocks: Block[];
 }
 
+interface BannerData {
+  image_url: string | null;
+  link_url: string | null;
+}
+
 async function getClubPageData(slug: string) {
   const { data: ground, error: groundError } = await supabaseAdmin
     .from('grounds')
@@ -59,28 +64,47 @@ async function getClubPageData(slug: string) {
     .eq('is_active', true)
     .order('display_order', { ascending: true });
 
-  if (sectionsError || !sections) {
-    return { ground, sections: [] as Section[] };
+  let sectionsWithBlocks: Section[] = [];
+
+  if (!sectionsError && sections) {
+    const sectionIds = sections.map(function (s) {
+      return s.id;
+    });
+
+    const { data: blocks } = await supabaseAdmin
+      .from('club_page_blocks')
+      .select('id, section_id, block_type, title, description, url, content, display_order')
+      .in('section_id', sectionIds)
+      .order('display_order', { ascending: true });
+
+    sectionsWithBlocks = sections.map(function (section) {
+      const sectionBlocks = (blocks || []).filter(function (b) {
+        return b.section_id === section.id;
+      });
+      return Object.assign({}, section, { blocks: sectionBlocks });
+    });
   }
 
-  const sectionIds = sections.map(function (s) {
-    return s.id;
-  });
+  const { data: slots } = await supabaseAdmin
+    .from('banner_slots')
+    .select('id, slot_key, default_image_url, default_link_url');
 
-  const { data: blocks } = await supabaseAdmin
-    .from('club_page_blocks')
-    .select('id, section_id, block_type, title, description, url, content, display_order')
-    .in('section_id', sectionIds)
-    .order('display_order', { ascending: true });
+  const { data: overrides } = await supabaseAdmin
+    .from('banner_overrides')
+    .select('slot_id, image_url, link_url')
+    .eq('ground_id', ground.id);
 
-  const sectionsWithBlocks: Section[] = sections.map(function (section) {
-    const sectionBlocks = (blocks || []).filter(function (b) {
-      return b.section_id === section.id;
+  const resolvedBanners: Record<string, BannerData> = {};
+  (slots || []).forEach(function (slot) {
+    const override = (overrides || []).find(function (o) {
+      return o.slot_id === slot.id;
     });
-    return Object.assign({}, section, { blocks: sectionBlocks });
+    resolvedBanners[slot.slot_key] = override
+      ? { image_url: override.image_url, link_url: override.link_url }
+      : { image_url: slot.default_image_url, link_url: slot.default_link_url };
   });
 
-  return { ground: ground, sections: sectionsWithBlocks };
+  return { ground: ground, sections: sectionsWithBlocks, banners: resolvedBanners };
 }
 
 export default async function ClubPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -93,6 +117,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
 
   const ground = data!.ground;
   const sections = data!.sections;
+  const banners = data!.banners;
 
   return (
   <div style={{ minHeight: '100vh', background: BG, fontFamily: "'Inter', sans-serif" }}>
@@ -105,6 +130,8 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
           <p style={{ color: '#6B6B6B', marginTop: '6px', fontSize: '15px' }}>{ground.country}</p>
         </header>
 
+        <BannerSlot banner={banners['club-page-top']} />
+
         {sections.map(function (section) {
           const injectWebsite = section.section_key === 'club_ground_info' ? ground.website : null;
           return (
@@ -112,6 +139,7 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
               key={section.id}
               section={section}
               injectWebsite={injectWebsite}
+              midBanner={banners['club-page-mid']}
             />
             );
           })}
@@ -121,9 +149,33 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
   );
 }
 
-function SectionBlock(props: { section: Section; injectWebsite: string | null }) {
+function BannerSlot(props: { banner: BannerData | undefined }) {
+  const banner = props.banner;
+  if (!banner || !banner.image_url) return null;
+  const img = (
+    <img
+      src={banner.image_url}
+      alt="Sponsored"
+      style={{ width: '100%', display: 'block', borderRadius: '8px' }}
+    />
+  );
+  return (
+    <div style={{ margin: '32px 0' }}>
+      {banner.link_url ? (
+        <a href={banner.link_url} target="_blank" rel="noopener noreferrer">
+          {img}
+        </a>
+      ) : (
+        img
+      )}
+    </div>
+  );
+}
+
+function SectionBlock(props: { section: Section; injectWebsite: string | null; midBanner: BannerData | undefined }) {
   const section = props.section;
   const injectWebsite = props.injectWebsite;
+  const midBanner = props.midBanner;
   const hasWebsite = injectWebsite ? true : false;
   const hasContent = hasWebsite || section.blocks.length > 0;
 
@@ -156,6 +208,9 @@ function SectionBlock(props: { section: Section; injectWebsite: string | null })
                     <WebsiteLink url={injectWebsite as string} />
                   </div>
                 )}
+                {block.block_type === 'visiting_info' && (
+                  <BannerSlot banner={midBanner} />
+                )}
               </div>
             );
           })}
@@ -167,7 +222,6 @@ function SectionBlock(props: { section: Section; injectWebsite: string | null })
 
 function WebsiteLink(props: { url: string }) {
   return (
-    
      <a href={props.url}
       target="_blank"
       rel="noopener noreferrer"
@@ -238,83 +292,85 @@ function BlockItem(props: { block: Block }) {
         )}
       </div>
     );
-  }if (block.block_type === 'visiting_info') {
-  const items: { label: string; value?: string }[] = [
-    { label: 'Transport Links', value: content.transport },
-    { label: 'Club Museum', value: content.museum },
-    { label: 'Club Shop', value: content.shop },
-    { label: 'Away Fans Entry Points', value: content.entry_points },
-    { label: 'Local Pubs (¼ mile)', value: content.pubs },
-    { label: 'Eateries / Restaurants', value: content.eateries },
-  ].filter((item) => item.value);
+  }
 
-  if (items.length === 0) return null;
+  if (block.block_type === 'visiting_info') {
+    const items: { label: string; value?: string }[] = [
+      { label: 'Transport Links', value: content.transport },
+      { label: 'Club Museum', value: content.museum },
+      { label: 'Club Shop', value: content.shop },
+      { label: 'Away Fans Entry Points', value: content.entry_points },
+      { label: 'Local Pubs (¼ mile)', value: content.pubs },
+      { label: 'Eateries / Restaurants', value: content.eateries },
+    ].filter((item) => item.value);
 
-   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Visiting Supporters</h3>
-      {items.map((item) => (
-        <div key={item.label}>
-          <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '4px', color: '#1A1A1A' }}>
-            {item.label}
-          </h4>
-          <p style={{ color: '#3A3A3A', fontSize: '14.5px', lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>
-            {item.value}
-          </p>
-        </div>
-      ))}
-       </div>
-  );
-}
+    if (items.length === 0) return null;
 
-if (block.block_type === 'fan_channels') {
-  const channels = content.channels || [];
-  if (channels.length === 0) return null;
-
-  const typeLabel = { youtube: 'YouTube', podcast: 'Podcast', misc: 'More' };
-  const typeColor = { youtube: '#CC0000', podcast: '#7C3AED', misc: '#6B6B6B' };
-
-  return (
-    <div>
-      <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Fan Channels</h3>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-               {channels.map((ch, i) => (
-          <a
-            key={i}
-            href={ch.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              textDecoration: 'none',
-              padding: '10px 14px',
-              border: '1px solid #E2E0DB',
-              borderRadius: '8px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '10px',
-                fontWeight: 700,
-                letterSpacing: '0.05em',
-                color: '#fff',
-                background: typeColor[ch.type] || '#6B6B6B',
-                padding: '3px 8px',
-                borderRadius: '4px',
-                flexShrink: 0,
-              }}
-            >
-              {typeLabel[ch.type] || 'Link'}
-            </span>
-            <span style={{ color: '#1A1A1A', fontWeight: 600, fontSize: '14.5px' }}>{ch.name}</span>
-          </a>
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Visiting Supporters</h3>
+        {items.map((item) => (
+          <div key={item.label}>
+            <h4 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '4px', color: '#1A1A1A' }}>
+              {item.label}
+            </h4>
+            <p style={{ color: '#3A3A3A', fontSize: '14.5px', lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>
+              {item.value}
+            </p>
+          </div>
         ))}
       </div>
-    </div>
-  );
-}
+    );
+  }
+
+  if (block.block_type === 'fan_channels') {
+    const channels = content.channels || [];
+    if (channels.length === 0) return null;
+
+    const typeLabel = { youtube: 'YouTube', podcast: 'Podcast', misc: 'More' };
+    const typeColor = { youtube: '#CC0000', podcast: '#7C3AED', misc: '#6B6B6B' };
+
+    return (
+      <div>
+        <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Fan Channels</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {channels.map((ch, i) => (
+            <a
+              key={i}
+              href={ch.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                textDecoration: 'none',
+                padding: '10px 14px',
+                border: '1px solid #E2E0DB',
+                borderRadius: '8px',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  letterSpacing: '0.05em',
+                  color: '#fff',
+                  background: typeColor[ch.type] || '#6B6B6B',
+                  padding: '3px 8px',
+                  borderRadius: '4px',
+                  flexShrink: 0,
+                }}
+              >
+                {typeLabel[ch.type] || 'Link'}
+              </span>
+              <span style={{ color: '#1A1A1A', fontWeight: 600, fontSize: '14.5px' }}>{ch.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   // fallback for any legacy block types (e.g. old 'link' blocks)
   return (
