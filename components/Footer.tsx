@@ -95,9 +95,9 @@ export default function Footer({
           >
             &larr; Back to yourpeople.football.
           </Link>
-        ) : (
+                ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
+            <img src="/badge-256.png" alt="yourpeople.football" width={20} height={20} style={{ borderRadius: '50%', display: 'block' }} />
             <span style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em', color: 'rgba(255,255,255,0.9)' }}>
               yourpeople.football
             </span>

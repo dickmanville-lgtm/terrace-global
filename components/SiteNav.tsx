@@ -32,7 +32,7 @@ export default function SiteNav({ active, club }: { active?: Section; club?: Clu
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#fff' }}>
-  <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#EF4444' }} />
+  <img src="/badge-256.png" alt="yourpeople.football" width={28} height={28} style={{ borderRadius: '50%', display: 'block' }} />
     <span style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em' }}>
     yourpeople.football
   </span>
