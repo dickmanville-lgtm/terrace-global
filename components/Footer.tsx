@@ -7,7 +7,11 @@ import Link from 'next/link';
 //   { label: 'Contact', href: '/contact' },
 // ];
 type FooterLink = { label: string; href: string };
-const FOOTER_LINKS: FooterLink[] = [];
+const FOOTER_LINKS: FooterLink[] = [
+  { label: 'Privacy', href: '/privacy-policy' },
+  { label: 'Terms', href: '/terms' },
+  { label: 'Contact', href: 'mailto:yourpeople.football@gmail.com' },
+];
 
 // Site social accounts. href: null renders a disabled "soon" state,
 // same convention as SiteNav's LINKS array.
